@@ -1,0 +1,287 @@
+---
+title: "Effects of Limiting Nitrogen and Phosphate on Microbial Development and Product Synthesis"
+author: "Iván Martín Martín"
+date: "08/02/2021"
+output: 
+  pdf_document:
+    toc: yes
+    toc_depth: 2
+bibliography: Ref_Review_LimNut.bib
+link-citations: yes
+notice: '@'
+---
+
+## How to Read
+
+- This report is organized **following the research articles** that have been considered. See references at the end of the report.
+- For every microbe, there is a **short summary of conclusions** at the end of the microbe-related papers. 
+
+
+\newpage
+## A. *Pseudomonas putida* KT2440 - Nitrogen Limitations
+### A1. *Integrated analysis of gene expression and metabolic fluxes in PHA‐producing Pseudomonas putida grown on glycerol* [@refA]
+
+### Introduction
+
+Note that most *P.putida* species can synthesize a wide range of PHAs, whereby the monomer composition of the polymer varies with carbon source and other environmental factors (...).
+
+### Section "Growth physiology under nitrogen limitation"
+
+[...] In *P.putida*, PHA synthesis is driven by nitrogen limitation. To assess the PHA production capacity on glycerol, chemostat cultures were conducted under nitrogen limitation with glycerol as sole carbon and energy source. 
+
+* Different growth regimes: low and high dilution rate.
+* The biomass yield was higher at high dilution rate in comparison to the yield observed at low dilution rate.
+
+### Section "The ED pathway is favored under both carbon and nitrogen limitation"
+[...] As previously reported, nitrogen limitation promotes synthesis of PHA in *P.putida* [ref1]. A similar phenomenon has been observed for **metabolically engineered E.coli strains** able to accumulate PHB on glucose [ref56] [...]. (See both references)
+
+In the current study, preferential use of the ED pathway and glyoxylate shunt was associated with increased PHA-production (...). Therefore, it seems that PHA synthesis in *P.putida* under nitrogen-limitation is mainly constrained by precursor-availability (...). Here we fully confirm the use of the ED pathway by *P.putida* KT2440 under both carbon and nitrogen-limiting conditions and propose its overexpression to improve PHA-productivity (...).
+
+Nitrogen-limiting growth drove a **major flux of carbon via the hexose-phosphates to the ED pathway** when the specific growth rate was increased (...).
+
+### See derived references
+
+*P.putida*: 1, 9, 41, (42)
+
+*E.coli*: 56
+
+\newpage
+### A2. *The metabolic response of P. putida KT2442 producing high levels of polyhydroxyalkanoate under single- and multiple-nutrient-limited growth: Highlights from a multi-level omics approach* [@refB]
+### Section "Physiological response of *Pseudomonas putida* under nutrient-limited conditions"
+
+Note *P.putida* *KT2442*. Decanoate as the only C-source, NH4+ as the only N-source. \newline
+Continuous cultivations conducted under aerobic chemostat conditions (3):
+
+* Carbon limited cultures
+* Nitrogen limited cultures
+* Dual (C, N) limited cultures
+
+**Carbon mass balance analysis** for each condition tested (Fig. 1). Similar percentage of carbon in PHAs in both CN and N limited cultures.
+
+#### Details in Figure 2
+
+* The **biomass yield on decanoate** decreased when the NH4+ concentration limited growth, with its major effect under strict nitrogen limitation (grams of PHA per grams of decanoate).
+
+* The **PHA yield** was very similar for both CN and N limited cultures (grams of PHA per grams of decanoate).
+
+* **Maximum specific decanoate uptake rate** (KT2442) obtained under single nitrogen-limiting conditions (grams of decanoate per gram of biomass, per hour). 
+
+* **Maximum specific PHA production rate** (KT2442) obtained when single nitrogen limitation (grams of PHA per gram of biomass, per hour).
+
+### Section "PHA accumulation *versus* nutrient availability" (see Table 1)
+
+* Heteropolymer synthesized under each condition, with the accumulation range of the storage compound (C6, C8, C10 - lenght of lateral chains) increasing when ($C_{0}$/$N_{0}$) ratio in the feed medium is higher (nitrogen-limiting conditions).
+
+  - *P. putida* is able to synthesize PHA up to 26% of its total cell dry weight (CDW) in C-limited cultures.
+  - Under dual limitation (C, N), 62% of the CDW was composed of PHAs
+  - Under N-limiting conditions, 81% of CDW was composed of PHAs
+
+* No remarkable difference observed in the monomer distribution. However, when NH4+ was the limiting nutrient, a slight increase (10%) in C10 was observed. When both carbon and nitrogen were below the detection limit in the chemostat, the monomer composition of the polymer was almost the same as the one observed in nitrogen deprived cultures (Table 1).
+
+### Section (iii) "Energy metabolism" (Potential explanation for high $P_{i}$ consumption)
+[...] A crucial question is how the cells orchestres its metabolism to generate the energy for sustaining growth while simultaneously large quantities of PHA is being synthesized. In this particular case: the F0F1 synthase subunit alpha AtpA was overproduced in dual and strict nitrogen limitation as compared to the carbon limitation (...). The increased expression of the F0F1-type ATP synthase might be **necessary for the cell** in order to produce ATP molecules via the loss of proton-motive force, since **high PHA yields decrease intracellular levels of ATP**.
+
+\newpage
+### A3. *A holistic view of polyhydroxyalkanoate metabolism in Pseudomonas putida* [@refC]
+#### Notes about *P. putida* KT2440 + Introduction
+
+In *P. putida* KT2440 and other pseudomonads, the pha cluster is organized into two main operons, phaC1ZC2D and phaIF, and is controlled by the transcriptional activator PhaD in response to ß-oxidation metabolites (...). Understanding the function of PHA metabolism within the system network requires an analysis of its regulatory logic, i.e. the relationship between the input and output of the route (...).
+
+The maintenance of an ongoing PHA cycle in *P.putida* ensures a more robust metabolism and plays a key physiological role. PHAs act as carbon and energy reservoirs that allow bacteria to better fend off carbon starvation. However, PHAs also provide **a metabolic link between carbon and nitrogen metabolism** (...).
+
+Transcriptomic and metabolic flux analyses have recently shown the **PHA cycle to play an important buffering role**; it balances global biomass (including PHA carbon/energy storage), cell division and energy spillage (...).
+
+### Section "Metabolic and regulatory networks wiring the PHA cycle, a critical pathway for synchronizing global carbon metabolism"
+
+[...] In *P.putida*, the nature of the substrate used as carbon source and PHA precursor has an impact on PHA metabolism (...). Although **a nutritional imbalance has been traditionally considered a prerequisite for PHA synthesis**, this might only be true when non-related substrates are used as precursors in biomass and PHA production.
+
+**Nitrogen limitation**, albeit not been strictly necessary for PHA synthesis from fatty acids in *P.putida*, **can improve the polymer production yield** and is therefore used in industrial biopolymer production (...).
+
+Other proteomic analyses of *P.putida* CA-3, using  styrene as a precursor, have confirmed the **production of PHA metabolism-associated proteins** only under a **nitrogen limitation regimen** (...).
+
+Note: The strain **KT2442** seems to be altered in such a way that it has difficulties coping with nitrogen starvation (growth rate and PHA production) (...).
+
+Under balanced C/N conditions, the **expression of the pha genes** (PHA production) is negatively modulated by the **global regulator Crc** (...). Inactivation of the crc gene further increased PHA production by 42–57%. Crc activity is influenced not only by the carbon source but also by the C/N ratio of the culture medium. **The regulatory response is suppressed if the nitrogen source becomes limiting**.
+
+\newpage
+### A4. *Production of poly(3-hydroxyalkanoates) by Pseudomonas putida KT2442 in continuous cultures* [@refD]
+### Section "Biomass and polymer formation"
+
+[...] The PHA concentration in the cells decreases with increasing growth rates from 1.7 g/L at D = 0.05 h^-1^, to 0.3 g/L at D = 0.27 h^-1^. Measurement of the ammonium concentration in the fermentation broth showed concentrations lower than 3 mg/L, which indicates that **the cultures are nitrogen-limited** and that *P.putida* KT2442 has a high affinity for ammonium (...). The yield of biomass corrected for the presence of polymer on nitrogen was calculated to be 9.5 g/g. 
+
+Biomass concentration and PHA concentration at C/N = 10, 20, 30 and 40 molC/ molN. Relation between the C/N ratio at D = 0.1 h^-1^ and biomass and PHA formation: **the C/N ratio of 20 gives the highest PHA concentrations**; higher C/N ratios do not result in higher polymer concentrations. Potential explanation: biomass and PHA formation might be slightly inhibited by toxic effects of the high substrate (C) concentration.
+
+### Section "Biomass and polymer formation" in Discussion
+PHA are formed at all growth rates tested, **with the highest polymer concentrations at low growth rates** (...). The relation between the polymer content and the growth rate is **typical for microorganisms that synthesize intracellular storage compounds**.
+
+In this particular case: oleic acid is a water-insoluble liquid that is dispersed in water by vigorous agitation. The uptake rate for this substrate in nitrogen-limited cultures is probably not influenced by the growth rate. 
+
+- At **low growth rates**, when biomass formation proceeds slowly, only a small part of the substrate is needed for biomass synthesis, and so a large amount of substrate can be converted to PHA.
+- At **higher growth rates**, a greater proportion of the substrates is needed for biomass synthesis and, as a result, less substrate is available for PHA synthesis.
+
+\newpage
+### Summary. Preliminary Conclusions on *Pseudomonas putida* KT2440 - nitrogen limitation
+
+* Most *P.putida* species can (naturally) synthesize a wide range of PHAs. In fact, this polymer production would be driven by nitrogen limitation. Potential overexpression of the ED pathway in PHA production under N-limiting conditions (...).
+
+* Experimental studies on *P.putida* KT2442 and PHA production showed:
+  - Reduced biomass yield under N-limiting conditions.
+  - Maximum specific substrate uptake rate under N-limiting conditions.
+  - Maximum specific PHA production rate under N-limiting conditions. Increase in the CDW (cell dry weight given by PHA product).
+  
+* Overconsumption of $P_{i}$ might be explained considering the high PHA yield under the N-limiting conditions.
+
+* A nutritional imbalance has been traditionally considered necessary for PHA synthesis (when non-related substrates are available). Nitrogen limitation improves the polymer production rate. This is also the case for *P.putida* CA-3 growing on styrene. Potential explanation: the expression of the *pha* genes is regulated by the global regulator Crc, negatively influenced by N source being scarce.
+
+* Low growth rates might facilitate a large production of PHA or similar polymers. Typical for microorganisms that synthesize intracellular storage compounds. \newline
+
+These conclusions **might be similar for P.putida KT2440** in the production of naringenin under N-limiting conditions. However, **potential limitations**:
+
+* PHA is naturally produced by *P.putida KT2440* and other pseudomonads, while naringenin production is a genetically engineered metabolic capability.
+
+* Metabolic regulation of naringenin production, unknown in detail.
+
+* PHA seems to be usually stored within the cell, while the interest for naringenin is its secretion to external media.
+
+\newpage
+## B. *Escherichia coli* KT2440 - Nitrogen and Phosphorus Limitations
+### B1. *Metabolic regulation of Escherichia coli and its phoB and phoR genes knockout mutants under phosphate and nitrogen limitations as well as at acidic condition* [@refE]
+
+Notice *Escherichia coli* strain BW25113. 
+
+### Section "Effect of phosphate limitation on the metabolism"
+
+**Conditions**: aerobic continuous cultivation was conducted at the dilution rate of 0.2 h^-1^ under different P concentrations. For the WT, **the fermentation characteristics significantly changed when feed P concentration became low** around 10% of the M9 medium. In particular, under such P-limiting conditions: 
+
+* the **specific glucose consumption rate** and the **specific acetate production rate** became significantly higher;
+* while **cell concentration** became significantly lower.
+
+See Table 1: very clear effect for WT. *Why acetate production?* (See Discussion) A decreased flow through the TCA cycle would be expected to cause an increase in AcCoA pool and caused more acetate overflow.
+
+### Section "Effect of culture pH and phosphate limitation on the metabolism"
+
+**Conditions**: aerobic continuous cultivation was conducted at the dilution rate of 0.2 h^-1^, under different P concentrations (100% and 55%), and different pH values (6.0 and 7.0).
+
+* More acetate was formed with higher glucose uptake rate, but the cell concentration became lower at pH 6.0 as compared to the case of pH 7.0.
+
+* The fermentation characteristics were different even between 100% and 55% of phosphate concentration under lower pH value.
+
+* [...] Acid stress and phosphate regulation are directly or indirectly interconnected [ref4].
+
+### Section "Effect of nitrogen limitation"
+
+See Table 3, effect of nitrogen limitation on fermentation characteristics, also at decreasing values of P concentration. For the case of N-limitation, compared to the N-rich condition:
+
+* The **specific glucose consumption rate** and the **specific acetate production rate** increased;
+* while **cell concentration** decreased.
+
+These last changes were further enhanced at lower P concentrations.
+**Potential explanation (Wild Type)**: decrease in transcript levels of genes *sdhC* and *mdh* in the TCA cycle, which might have led to TCA cycle partial repression, and thus an increase in the specific acetate production rate. 
+
+Moreover, an increase in expression of *pstG*, *pstG*, *pfkA* genes justified the increase in the specific glucose consumption rate. In the same way, respiratory chain genes (such as *cyoA*, *cydB*, *ndh* and *nuoA*, *sodA*) were significantly upregulated under N-limitation. See also global regulatory gene, *soxR*, upregulated.
+
+**Interesting paper** in case of further configurations of both N and P-limiting conditions happening at the same time (FLYCOP).
+
+### Section "Discussion"
+**Interesting ideas**:
+
+* The **glycolysis was activated** under phosphate limiting conditions, considering data of the specific growth rate (Table 1) and gene transcript levels (Figure 1). Explanation: ATP demand caused by the decrease in the ATP formation with limited amount of available phosphate.
+
+  Moreover, the lower cell concentration might also be due to the lower ATP formation under P-limitation. See papers on the relationship between cell growth rate and specific ATP production rate [ref41,42].
+  
+* The production of less ATP finally affects the TCA cycle genes (partial repression), which in turn produces more acetate. *Potential check*: consider tracking pH or acid products from glycolysis (i.e. acetate) in FLYCOP.
+
+* The **Pho regulon** is thus evolved to maintain a trade-off between cell nutrition and cell survival during Pi starvation [ref46]. The previous reports suggest that the Pho regulon and the stress response are interrelated [ref45-50].
+
+\newpage
+### B2. *Analysis of polyhydroxybutyrate flux limitations by systematic genetic and metabolic perturbations* [@refF]
+
+Notice that *E.coli* strains discussed are XL1-Blue and K12 recAHkan TGD (cat +PHB).
+
+### Section "PHB production in nitrogen-limited chemostat"
+
+Scenario: chemostat under N-limiting conditions (NH4+ always below 10 mg/L), three different dilution rates (0.05, 0.10, 0.30) (h^-1^).
+
+
+[...] An excess of glucose (under nitrogen-limiting conditions) would be expect to provide an abundant substrate supply for PHB accumulation (...). This is presumably due to the dominance of maintenance requirements in the cell at low growth rates. 
+
+Biomass concentration was nearly constant across all dilution rates, as would be expected for nitrogen-limited growth, and was **set by the concentration of nitrogen in the feed (and the biomass yield of *E.coli* on ammonium)**.
+
+### Section "Discussion"
+
+Despite the last facts, **the nitrogen-limited chemostat did not vary PHB flux significantly for large changes in growth rates**. It was expected that the specific glucose uptake rate would remain unchanged with dilution rates, allowing glucose previously required for biomass formation to be diverted to PHB (increased PHB flux).
+
+However, the chemostat data showed a flat relationship between PHB productivity and growth rate. Therefore, glucose uptake might be regulated, even under nitrogen limitation, such that acetyl-CoA pool sizes are
+approximately constant regardless of growth rate or glucose availability (...).
+
+
+\newpage
+### Summary. Preliminary Conclusions on *Escherichia coli* W - N & P limitations
+
+* **Higher specific glucose consumption rate** (substrate) and **higher specific acetate production rate** under P-limiting conditions. **Cell concentration** became lower under these circumstances [@refE].
+
+* Similar effect for N-limiting conditions, with or without additional P limitations [@refE].
+
+* An **apparently opposite effect** was found in [@refF] for genetically engineered PHB production in *E.coli*. 
+  - Nitrogen limitations conditioned final biomass growth, regardless of dilution rates (as expected).
+  - However, in this case final PHB productivity did not increase under N limitation, since glucose uptake rate seemed to be regulated depending on growth rate.
+  
+  This last case would indicate that **nitrogen limitations on (genetically engineered) E.coli might not always lead to secondary metabolites overproduction**, once biomass growth has already stopped but with carbon source being still available.  \newline
+
+These conclusions **might be similar for Escherichia coli W** in the production of fructose / pCA under N-limiting or P-limiting conditions. However, **potential limitations**:
+
+* The strain considered was not the same [@refF]: BW25113 *vs*. W (genetically engineeered) (our strain).
+
+* Acetate might not be a secondary metabolism product of interest, but a common intermediate product instead [@refE].
+
+* The moment when the product synthesis starts to be specially boosted is not precised, i.e. in our simulations, fructose / pCA overproduction and sucrose overconsumption started when N / P sources were completely exhausted. This detail is not specifically precised in [@refF].
+
+* The effect of secondary metabolites overproduction  as a consequence of biomass growth detention, given nutrient limitations (in particular, nitrogen), might not always happen for *E.coli* [@refF]; depending on the strain, the final product of interest, (potential) genetic engineering, media composition and other external influences, etc.
+
+\newpage
+### References
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
