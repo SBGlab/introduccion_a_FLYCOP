@@ -1,3 +1,0 @@
-With the available output analysis scripts and depending on your research interests, here are some suggested analysis to be performed after executing FLYCOP.
-
-
