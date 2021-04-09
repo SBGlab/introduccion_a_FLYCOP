@@ -1,0 +1,407 @@
+---
+title: "LimNut_N_nonSucr"
+author: "Iván Martín Martín"
+date: "2/3/2021"
+output: pdf_document
+---
+
+## Questions to answer
+
+- Is sucrose limitation related to the effect of microbes death?
+- What is the interaction between carbon source limitation and nitrogen limitation?
+- Does the current phosphate levels have any influence on this situation?
+
+See FLYCOP configurations *M9base_nonSucr*, *M9100N_nonSucr*, *M9b50N_nonSucr*: similar to those with nitrogen limitation but without sucrose limitation.
+
+## 1. First Question: Is sucrose limitation related to the effect of microbes death?
+
+### How to analyze
+
+* Check if the effect appears without the sucrose limitation.
+
+* Classification in fitness ranks and further analysis:
+  - mean final concentration for sucrose
+  - cycle at which $NH_{4}$ is finally exhausted ----------------------> **script** (+further increase, in case it is not final exhaustion)
+      * It is supposed here that the cycle in which the dead phase effect starts is the moment when $NH_{4}$ is finally exhausted.
+      
+  - phosphate effect (increases, decreases, cycle of final exhaustion)
+  
+* Classification in naringenin production ranks and further analysis:
+  - mean final concentration for sucrose
+  - cycle at which $NH_{4}$ is finally exhausted
+    * It is supposed here that the cycle in which the dead phase effect starts is the moment when $NH_{4}$ is finally exhausted.
+    
+  - phosphate effect (increases, decreases, cycle of final exhaustion)
+  
+
+### Important Preliminary Notes
+
+**The fitness ranks do not match the naringenin production ranks**: in other words, fitness is specially affected by final values of *P.putida* KT biomass. Therefore, the divergence of this parameter within every naringenin rank generates that the naringenin concentration values within a rank do not necessarily belong to the same fitness rank.
+
+* The boxplots / scatterplots only consider those configurations were SD is not excessive.
+
+**Statistics *vs*. Boxplot / Scatterplot representation**: we assume the results match, after a few quick checks.
+
+- 2 for final sucrose concentration
+- 2 for dead phase init cycle
+
+### 1.1. M9base_nonSucr
+
+**Quick Summary of configurations**: 
+
+* 77 cases had SD < (0.1)·(`avgfitness`) (considered OK).
+* 2 cases had SD > (0.1)·(`avgfitness`).
+* 21 cases had SD > (0.1)·(`avgfitness`) and they also raised a ZeroDivisionError. In all of these cases, *E.coli* was finally exhausted, with *P.putida KT* in final values around 10.0 gL^-1^; and naringenin production was disproportionate.
+
+* Number of configurations with acceptable SD and final [NH4+] (mM) = 0: 76 / 77.
+* Number of configurations with acceptable SD and final death effect: 75 / 77.
+* Number of configurations with acceptable or non-acceptable SD and final death effect: 77 / 79.
+
+**The death effect is present, even under no carbon source (sucrose) limitation**.
+
+In further scatterplots of **Dead Init Cycle** *vs*. ranks, note that when the value is 0, it means the *dead phase effect* did NOT happened.
+
+
+### 1.1.1. Analysis for fitness ranks
+
+**Fitness ranks** (mM / gL^-1^):
+
+* **1**: (0, 10). 6 values.
+* **2**: (10, 20). 13 values.
+* **3**: (20, 30). 10 values.
+* **4**: (30, 40). 10 values.
+* **5**: (45, 60). 6 values.
+* **6**: (60, 65). 14 values.
+* **7**: (88, 100). 18 values.
+
+**DeadInitCycle**: in general, for all fitness ranks, except for some values in n.2 (10, 20), n.3 (20, 30) and n.5 (45, 60), the initial cycle for the death effect happened before cycle 60. As for rank n.2, just two values in 13 were around cycle 100. In the case of rank n.3 (20, 30), 4 values in 10 were between 80 and 110 (cycles). Finally, for rank n.5 (45, 60), 4 values in 6 were between 90 and 130 (cycles).
+
+**FinalNH4**: in general, final $NH_{4}$ concentration was 0 for all values in all ranks, except for one outlier in rank n.3 (20, 30), possibly due to the dead phase effect (149.582 mM).
+
+**FinalPi**: final $P_{i}$ concentration was variable within the different ranks.
+
+- In rank n.1 (0, 10), this final concentration did not substantially vary with respect to the initial concentration (69.9 mM) for 4 in 6 values. For one point, it was an intermediate concentration; and for the remaining point, it was 0.
+- In ranks n.2 (10, 20), n.6 (60, 65) and n.7 (88, 100), final $P_{i}$ tended to be under 15-20 mM; except for 2 outliers in rank n.2 (around 68. mM).
+- In rank n.3 (20, 30), final $P_{i}$ values were concentrated in 0 mM (7 values). However, there were 3 outliers: one around 69.9 mM, and two around 400 mM. 
+- In rank n.4 (30, 40), final $P_{i}$ tended to be 0 or near 0.
+- In rank n.5 (45, 60), there were three final concentrations around 0 mM, and three final values around 400 mM.
+
+**FinalSucr**: final sucrose concentration was variable within the different ranks.
+
+- In rank n.1 (0, 10), this final concentration varied between 550 and 650 mM. One outlier in 850 mM.
+- In rank n.2 (10, 20), it varied between 580 and around 950 mM. In turn, in ranks n.6 (60, 65) and n.7 (88, 100), it ranged from 560 to 850 (rank 6) or 750 (rank 7).
+- In ranks n.3 (20, 30), n.4 (30, 40) and n.5 (45, 60), these values ranged from 700 or 750 to 900 - 950 mM. In the y-axis section between 850 and 950, there were just two points, belonging to fitness rank 4 (30, 40).
+
+
+### 1.1.2. Analysis for naringenin production ranks
+
+**Naringenin  production ranks** (mM):
+
+* **1**: (0, 10). 12 values.
+* **2**: (10, 20). 16 values.
+* **3**: (20, 30). 15 values.
+* **4**: (30, 40). 13 values.
+* **5**: (40, 50). 12 values.
+* **6**: (50, 65). 7 values.
+* **7**: (100, 170). 2 values.
+
+**DeadInitCycle**: in general, for all fitness ranks, except for some values in n.2, n.3, n.4, n.5 the initial cycle for the death effect happened before cycle 60. As for rank n.2 (10, 20), just two values in 16 were around cycle 100. In the case of rank n.3 (20, 30), 4 values in 15 were between 80 and 110 (cycles). In rank n.4 (30, 40), 2 in 13 values were around cycle 120. Finally, for rank n.5 (40, 50), 2 values in 12 were around cycle 100.
+
+**FinalNH4**: in general, final $NH_{4}$ concentration was 0 for all values in all ranks, except for one outlier in rank n.7 (100, 170), possibly due to the dead phase effect (149.582 mM).
+
+**FinalPi**: final $P_{i}$ concentration was variable within the different ranks.
+
+- In ranks n.1 (0, 10) and n.2 (10, 20), final $P_{i}$ values ranged from 0 to 69.9 mM.
+- In rank n.3 (20, 30), most values were near 0. However, two of them were around 20-30 mM, and there were two additional outliers (around 400 mM).
+- In ranks n.4 (30, 40) and n.5 (40, 50), most values were near 0. However, there were two outliers in rank 4 and one in rank 5 (the three of them, around 400 mM).
+- In rank n.6 (50, 65), all final concentrations were around 0 mM.
+- In rank n.7 (100, 170), there were just two values, for which final $P_{i}$ concentration was the initial one: 69.9 mM.
+
+**FinalSucr**: final sucrose concentration was variable within the different ranks.
+
+- In rank n.1 (0, 10), this final concentration varied between 550 and 900 mM.
+- In ranks n.2 (10, 20), n.3 (20, 30) and n.4 (30, 40), final sucrose concentration ranged between 550 and 950 mM. It is interesting to note that in the y-axis scope (850-950), there were just two points (900 mM), in rank n.4 (30, 40).
+- In rank n.5 (40, 50), final sucrose values were around 700 and 950 mM. 
+- In rank n.6 (50, 65), final sucrose values were around 650 and 850 mM. 
+- In rank n.7 (100, 170), the only two prsent points were around 930 and 950 mM.
+
+### 1.1.3. Conclussion to Preliminary Analysis
+
+* **Sucrose limitation seemed not to be the cause for microbes dead** (at least, not the direct cause): since in this alternative FLYCOP run, sucrose was not a limiting nutrient in the media.
+
+
+### 1.2. M9100N_nonSucr
+
+**Quick Summary of configurations**: 
+
+* 43 cases had SD < (0.1)·(`avgfitness`) (considered OK).
+* 26 cases had SD > (0.1)·(`avgfitness`).
+* 31 cases had SD > (0.1)·(`avgfitness`) and they also raised a ZeroDivisionError. In all of these cases, *E.coli* was finally exhausted and naringenin production was disproportionate. Moreover, in 21 of 31 cases, *P.putida KT* was in final values around 10.0 gL^-1^.
+
+* Number of configurations with acceptable SD and final [NH4+] (mM) = 0: 20 / 43.
+* Number of configurations with acceptable SD and final death effect: 32 / 43.
+* Number of configurations with acceptable or non-acceptable SD and final death effect: 53 / 69.
+
+**The death effect is present, even under no carbon source (sucrose) limitation**.
+
+### 1.2.1. Analysis for fitness ranks
+
+**Fitness ranks** (mM / gL^-1^):
+
+* **1**: (0, 10). 11 values.
+* **2**: (10, 20). 9 values.
+* **3**: (20, 30). 7 values.
+* **4**: (30, 50). 4 values.
+* **5**: (70, 100). 7 values.
+* **6**: (100, 120). 5 values.
+
+**DeadInitCycle**: in general, for all values in ranks 3 to 6, the death effect happened, starting at a cycle between 50 and 100. As for the case of ranks n.1 (0, 10) and n.2 (10, 20), this death effect happened 6 and 3 times, respectively. For rank n.1, the effect started around cycle 100 for two values and around cycle 200 for the four remaining cases. For rank n.2, the effect started around cycle 100 for the three mentioned values.
+
+**FinalNH4**: final $NH_{4}$ concentration was variable within the different ranks.
+
+- In ranks n.1 (0, 10), n.2 (10, 20), n.3 (20, 30) and n.4 (30, 50), final values tended to be 0 or under 10 mM in a few cases. There were two exceptions for rank n.2 (9 values), with $NH_{4}$ final concentration around 20 mM.
+- In rank n.5 (70, 100), there were 3 final values around 0; 2 final values near (under) 20 mM; and 2 final values around 50 and 55 mM.
+- In rank n.6 (100, 120), there were an important dispersion for the 5 values: 5, 30, 40, 50 and 60 mM (approx.).
+
+**FinalPi**: final $P_{i}$ concentration was variable within the different ranks. However, there was an important effect of $P_{i}$ final exhaustion as the fitness increased.
+
+- In ranks n.3 (20, 30), n.4 (30, 50), n.5 (70, 100) and n.6 (100, 120), final $P_{i}$ values were 0 or (very) near to 0.
+- In rank n.1 (0, 10), there was a group of 7 points near the original $P_{i}$ concentration (50-60  mM); and another group, where 2 points had 0 values, one had a value around 6 mM, and the last one had a value around 12 mM. 
+- In rank n.2 (10, 20), there was a group of 3 points near the original $P_{i}$ concentration (50-60  mM); a second group of 3 points with 0 values; and a third group of 3 points with a very high value (650-700 mM).
+
+**FinalSucr**: final sucrose concentration was variable within the different ranks.
+
+- In ranks n.1 (0, 10) and n.2 (10, 20), most of the points were concentrated between a value near 1000 and 600 mM for final sucrose concentration. However, there were two outliers, one for each rank: 500 mM for rank 1, 200 mM for rank 2.
+- In ranks n.3 (20, 30), n.4 (30, 50), n.5 (70, 100), most of the points were concentrated under 400 mM, with some final values near 0 or 0 in the three ranks. There were two points above 400 mM in rank 3 (close to 400 mM), and in rank 5 the higher values were very close to 200 mM. This would mean a very high consumption of sucrose in this fitness ranks.
+- In rank n.6 (5 values), final sucrose was 0 for all points, which is a very exaggerated sucrose consumption.
+
+### 1.2.2. Analysis for naringenin production ranks
+
+**Naringenin production ranks** (mM):
+
+* **1**: (0, 20). 6 values.
+* **2**: (20, 40). 6 values.
+* **3**: (50, 60). 5 values.
+* **4**: (60, 70). 7 values.
+* **5**: (70, 95). 7 values.
+* **6**: (100, 150). 11 values.
+* **7**: (1 value, 202.36 mM). 1 values.
+
+**DeadInitCycle**: initial cycle for the *dead phase effect* was different, depending on the naringenin rank.
+
+- In rank n.1 (0, 20), 3 values in 6 experience the death effect: two of them starting around cycle 120 and the remaining one around cycle 210-220.
+- In rank n.2 (20, 40), 4 values in 6 experience this effect: one of them starting around cycle 120 and the remaining three starting around cycle 200-220.
+- In rank n.3 (50, 60), 3 cases in 5 did experience this effect starting around cycle 75-95.
+- In rank n.4 (60, 70), 4 cases in 7 did experience the *death effect*, starting around cycle 60-100.
+- In rank n.5 (70, 95), all 7 cases experienced the *death effect*, starting between 50 and 110 cycles. 
+- In rank n.6 (100, 150), just one in 11 values did not experience this effect. As for the remaining 10 cases, *dead phase* started between cycle 50 and 80. 
+- In rank n.7 (1 value, 202.36 mM), the *dead phase* started around cycle 60.
+
+**FinalPi**: final $P_{i}$ concentration was variable within the different ranks. However, there was an effect of $P_{i}$ final exhaustion as the fitness increased.
+
+- In ranks n.1 (0, 20), n.2 (20, 40) and n.3 (50, 60), there were two different groups of values: one with $P_{i}$ close to 0 or 0; and the other one with $P_{i}$ near initial values (69.9 mM).
+- In ranks n.4 (30, 50), n.5 (70, 100) and n.7 (1 value, 202.36 mM), final $P_{i}$ values were 0 or (very) near to 0. As for rank n.6 (100, 150), final $NH_{4}$ was 0 or very close to 0 in 10 of 11 values. The remaining value was around 60 mM (the initial concentration, 69.9 mM).
+
+**FinalSucr**: final sucrose concentration was variable within the different ranks.
+
+- In ranks n.1 (0, 20) and n.2 (20, 40), most of the points were concentrated between a value near 1000 and 800 mM for final sucrose concentration. However, there were three outliers, two for rank n.1 (~500 mM; ~ 200 mM); and one for rank n.2 (~600 mM).
+- In ranks n.3 (50, 60), n.4 (60, 70), n.5 (70, 95), n.6 (100, 150), final sucrose values were more or less dispersed from around 900-950 mM to 0 or close to 0. This would mean a very high consumption of sucrose in this fitness ranks.
+- In rank n.7 (1 value, 202.36 mM), final sucrose was 0 mM, which was an exagerated consumption of the carbon source.
+
+### 1.2.3. Conclussion to Preliminary Analysis
+
+* **Sucrose limitation seemed not to be the cause for microbes dead** (at least, not the direct cause): since in this alternative FLYCOP run, sucrose was not a limiting nutrient in the media. However, for some configurations in diverse fitness or naringenin production ranks, sucrose concentration was finally 0, which would be a disproportionate carbon source consumption.
+
+* In this case, it is important to note that there were certain configurations where the *death effect* did not happened. They belonged to the first two fitness ranks. In these cases, $NH_{4}$ might be finally exhausted, but it would be interesting to further check if $P_{i}$ was exhausted as well, under non sucrose limitation (in both these ranks, final sucrose was never 0 or close, but there was still a very important consumption).
+
+### 1.3. M950N_nonSucr
+
+**Quick Summary of configurations**: 
+
+* 77 cases had SD < (0.1)·(`avgfitness`) (considered OK).
+* 3 cases had SD > (0.1)·(`avgfitness`).
+* 20 cases had SD > (0.1)·(`avgfitness`) and they also raised a ZeroDivisionError. In all of these cases, *E.coli* was finally exhausted and naringenin production was disproportionate. Moreover, *P.putida KT* was in final values around 10.0 gL^-1^ in nearly all cases.
+
+* Number of configurations with acceptable SD and final [NH4+] (mM) = 0: 68 / 77.
+* Number of configurations with acceptable SD and final death effect: 74 / 77.
+* Number of configurations with acceptable or non-acceptable SD and final death effect: 76 / 80.
+
+**The death effect is present, even under no carbon source (sucrose) limitation**.
+
+### 1.3.1. Analysis for fitness ranks
+
+**Fitness ranks** (mM / gL^-1^):
+
+* (0, 10), (10, 20), (20, 30), (30, 42), (50, 60), (78, 92)
+
+* **1**: (0, 10). 5 values.
+* **2**: (10, 20). 17 values.
+* **3**: (20, 30). 10 values.
+* **4**: (30, 42). 10 values.
+* **5**: (50, 60). 7 values.
+* **6**: (78, 92). 28 values.
+
+**DeadInitCycle**: in general, in all ranks there were a group of points where the *death effect* started between cycle 30 and cycle 80. In rank 6, all 28 values were contained in this interval.
+
+For ranks 1 to 4, there were also some points between 140 and even 200 (*death effect* starting much later in the simulation). This group was more abundant for rank n.2 and did just contain one point for ranks n.1 and n.3. Finally, there were 3 cases in rank n.2 () where the *death effect* was not observed.
+
+**FinalNH4**: $NH_{4}$ was finally exhausted in all ranks, except for 9 points in n.6 (78, 92) (28 points). However, in this last cases its final value was very close to 0 (x < 0.01 mM).
+concentration was variable within the different ranks.
+
+**FinalPi**: final $P_{i}$ concentration was variable within the different ranks. However, there was an effect of $P_{i}$ final exhaustion as the fitness increased.
+
+- In rank n.1 (0, 10), there were 2 values close to the initial concentration, 2 intermediate values and 1 value of 0 mM.
+- In rank n.2 (10, 20), there were 2 values around the initial concentration and an outlier (> 600 mM). The rest of 14 points were all 0 or very close.
+- In ranks 3 to 6, most of the final $P_{i}$ values were 0; except for 1 in 10 points (rank 3: 20, 30), x > 700 mM; and 4 in 10 points (rank 4: 30, 42), 600-700 mM.
+
+**FinalSucr**: final sucrose concentration was variable within the different ranks. However, in general there was a very important carbon consumption in all ranks.
+
+- In ranks n.1 (0, 10) and n.2 (10, 20), final sucrose values were more or less dispersed along the whole y-interval: from 900 to 100 mM.
+- In ranks n.3 (20, 30) and n.4 (30, 42), final sucrose values were dispersed along the range 900 to 400 mM.
+- In ranks n.5 (50, 60) and n.4 (78, 92), final sucrose values were dispersed along the range 600 to 50 mM (values closer to 0).
+
+### 1.3.2. Analysis for naringenin production ranks
+
+**Naringenin production ranks** (mM):
+
+* **1**: (0, 10). 6 values.
+* **2**: (10, 20). 3 values.
+* **3**: (20, 30). 9 values.
+* **4**: (30, 40). 6 values.
+* **5**: (40, 50). 5 values.
+* **6**: (50, 60). 9 values.
+* **7**: (60, 70). 4 values.
+* **8**: (70, 80). 8 values.
+* **9**: (80, 90). 5 values.
+* **10**: (90, 100). 5 values.
+* **11**: (100, 182). 17 values.
+
+
+**DeadInitCycle**: in general, in all ranks there were a group of points where the *death effect* started between cycle 30 and cycle 80. In ranks 2 to 9, there were also some more cases where the *death effect* started later (140 to 200 cycle interval). Finally, there were 3 cases with no *death effect*, one in rank n.9 (80, 90) and 2 in rank n.11 (100, 182).
+
+**FinalNH4**: $NH_{4}$ was finally exhausted in all ranks, except for 9 points in total, belonging to different ranks: 1 in rank n.3 (20, 30), 1 in n.6 (50, 60), 1 in n.8 (70, 80), 1 in n.9 (80, 90), 1 in n.10 (90, 100) and 4 in n.11 (100, 182). However, in these last cases the final $NH_{4}$ was very close to 9 (x < 0.01).
+
+**FinalPi**: final $P_{i}$ concentration was frequently 0 in all ranks. However, there were certain exceptions.
+
+- In rank n.1 (0, 10), there were 2 values close to the initial concentration, 2 intermediate values and 2 values of 0 mM.
+- In ranks n.5 (40, 50), n.6 (50, 60), n.7 (60, 70) and n.8 (70, 80) there were 1, 2, 2, and 2 outliers, respectively: values between 550 and 750 mM.
+- In ranks n.9 (80, 90) and n.11 (100, 182), there were 1 and 2 points with final $P_{i}$ close to the original concentration.
+
+**FinalSucr**: final sucrose concentration was very variable within the different ranks. However, in general there was a very important carbon consumption, and final concentrations ranged from 900 to 200-50 mM in nearly all ranks.
+
+### 1.3.3. Conclussion to Preliminary Analysis
+
+* **Sucrose limitation seemed not to be the cause for microbes dead** (at least, not the direct cause): since in this alternative FLYCOP run, sucrose was not a limiting nutrient in the media. However, for many configurations in diverse fitness or naringenin production ranks, sucrose consumption was disproportionate.
+
+* It would be interesting to further check the interaction between $NH_{4}$ and $P_{i}$ exhaustion. 
+
+### 1.4. Quick Conlusions
+
+* **Sucrose limitation seemed not to be the cause for microbes dead** (at least, not the direct cause). However, there is an effect of disproportionate sucrose consumption under $NH_{4}$ exhaustion.
+
+* It would be interesting to further check the interaction between $NH_{4}$ and $P_{i}$ exhaustion. 
+
+
+\newpage
+
+## 2. Second Question: What is the interaction between carbon source limitation and nitrogen limitation?
+
+It seems clear that, under nitrogen limitation, further carbon source limitation finally leads to microbes death: once $NH_{4}$ is exhausted, if sucrose or fructose are depleted, *E.coli* or *P.putida* (respectively) start to die. However, under no sucrose limitation (i.e. no carbon source limitation), but still nitrogen limitation and $P_{i}$ initial levels of 69.9 mM, the *death effect* is observed. In these cases, there might be an interaction between nitrogen and phosphate exhaustion.
+
+- Higher sucrose consumption, related or not to nitrogen limitation?
+- See section 3 (Third Question)
+
+    
+\newpage
+## 3. Third Question: Does the current phosphate levels have any influence on this situation?
+
+### 3.1. Further Analysis of the interaction between $NH_{4}$ final exhaustion and $P_{i}$ final levels under non-sucrose limitation. M9100N_nonSucr
+
+This further analysis was performed for the two fitness ranks were the *death effect* was not finally observed.
+
+* **1**: (0, 10). 4 in 11 values without *death effect*.
+* **2**: (10, 20). 6 in 9 values without *death effect*.
+
+### 3.1.1. Fitness rank: 0 < x < 10
+
+* In those cases where *death effect* did not happened, final $NH_{4}$ concentration was not 0. However, in those cases with death of microbes, final $NH_{4}$ values were 0.
+
+* In those cases where *death effect* did not happened, final $P_{i}$ concentration tended to be intermediate (50 mM or higher). However, there were two cases of final microbes death where $P_{i}$ final concentrations were also around 60 mM. In the remaining cases of *death effect*, final $P_{i}$ was 0 (2 values) or between 5 to 15 mM (another 2 values).
+
+* In those cases where *death effect* did not happened, final sucrose concentrations were always above 900 mM (consumption less than 100 mM). 
+
+However, in those cases with *death effect*, final sucrose concentration tended to be inferior to 900 mM: 2 values under 650 mM, 2 values with 850-890 mM, 2 values slightly above 900 mM. It is worth noticing that, in those cases with the lowest final sucrose concentration, microbes death started much before than the remaining ones.
+
+
+### 3.1.2. Fitness rank: 10 < x < 20
+
+* In those cases where *death effect* did not happened, final $NH_{4}$ concentration was never 0, except in 1 of 6 cases. However, in those cases with death of microbes, final $NH_{4}$ values were 0 (3 values).
+
+* In those cases where *death effect* did not happened, final $P_{i}$ concentration tended to be intermediate (50 mM or higher) (3 values) or even disproportionate (phosphate overproduction) (around 650 mM). In the cases of *death effect*, final $P_{i}$ was always 0 (3 values).
+
+* In those cases where *death effect* did not happened, final sucrose concentrations were always above 900 mM (consumption less than 100 mM). 
+
+However, in those cases with *death effect*, final sucrose concentration tended to be inferior to 900 mM: 2 values around 700 mM, and one value around 200 mM.
+
+
+### 3.1.3. Main conclusions
+
+* Under N limitation (final exhaustion), there was usually a high consumption of $P_{i}$. On the other hand, for those cases with no **death effect**, final $P_{i}$ remained in intermediate values. The effect of $P_{i}$ overproduction was observed in some cases of no final **death effect**.
+
+* Under N limitation (final exhaustion), there seemed to be an overconsumption effect of carbon source (sucrose): however, it seemed to be sometimes related to an additional $P_{i}$ final exhaustion, specially in fitness rank (10 < x < 20), and with some exceptions in this sense in rank (0 < x < 10).
+
+
+## 3.2. Further Analysis of the interaction between $NH_{4}$ final exhaustion and $P_{i}$ final levels under non-sucrose limitation. M950N_nonSucr
+
+This further analysis was performed for the only fitness rank were the *death effect* was not finally observed.
+
+* **2**: (10, 20). 17 values. 3 in 17 values without *death effect*. **Further analysis**:
+
+### 3.2.1. Fitness rank: 10 < x < 20
+
+* In those cases where *death effect* did not happened, final $NH_{4}$ concentration was always 0 (3 cases), as in the cases with *death effect*.
+
+* In those cases where *death effect* did not happened, final $P_{i}$ concentration tended to be intermediate (around 60 mM, near initial values). This intermediate values were not found for configurations with *death effect*, in which final $P_{i}$ was either 0 (more frequent) or a disproportionate concentration (around 600 mM, 1 case).
+
+* In those cases where *death effect* did not happened, final sucrose concentrations were always around 950-900 mM (consumption around 100-120 mM, at most). In those cases with *death effect*, it was relatively frequent to find final sucrose concentrations between 100 to 700 mM, specially for microbes death starting before cycle 100 in the simulation.
+
+There were also some values of final sucrose consumption around 100 mM (final concentration ~ 950-900 mM), for cases of microbes death starting after cycle 150 within the simulation.
+
+### 3.2.2. Main conclusions
+
+* Under N limitation (final exhaustion), there was usually a high consumption of $P_{i}$. On the other hand, for those cases with no **death effect**, final $P_{i}$ remained in intermediate values. The effect of $P_{i}$ overproduction was observed in one case of **final death effect**.
+
+* Under N limitation (final exhaustion), there seemed to be an overconsumption effect of carbon source (sucrose): however, it seemed to be sometimes related to an additional $P_{i}$ final exhaustion, specially for those cases where microbes death started soon (before cycle 100).
+
+### 3.3. Quick Conclussions
+
+* For those cases where the **death effect** happened (which are usually those with $NH_{4}$ final exhaustion), there was usually a high consumption of $P_{i}$ (final values under 10 mM or even 0 mM). **When does this $P_{i}$ consumption starts?**
+
+* For those cases where the **death effect** did NOT happened (in which final $NH_{4}$ is not usually exhausted, but not always), $P_{i}$ final values were close to the initial values (69.9 to around 60 mM, $P_{i}$ consumption).
+
+* The effect of $P_{i}$ overconsumption happened with or without **death effect**, thus it could not be related to any of both circumstances explicitly (though it was more frequent for NO **death effect**).
+
+* For those cases where the **death effect** happened (which are usually those with $NH_{4}$ final exhaustion), there used to be a high sucrose consumption. In this sense, there might be a related issue with $P_{i}$ concentration.
+
+  - If $P_{i}$ is early exhausted, the sucrose consumption would apparently be boosted.
+  - If $P_{i}$ is not exhausted, this sucrose consumption would not be boosted (at least, not to the same extent).
+
+
+\newpage
+### 4. How to carry on: Checking Hypothesis
+
+* Is nitrogen more important to *E.coli* than it is for *P.putida*?
+  
+    - Mutant strain of *P.putida* for N uptake (do not limit the full N uptake).
+
+* Importance of P limitation for *P.putida*. It seems that phosphate limitation is more important to this microbe than N limitation.
+
+    - Mutant strain of *P.putida* for P uptake (do not limit the full P uptake), with or without N uptake mutation.
+
+* Is phosphate limitation equally important to both microbes?
+
+    - After the last checkings, mutant strain of *E. coli* for P uptake (do not limit the full P uptake).
+
+
+
+

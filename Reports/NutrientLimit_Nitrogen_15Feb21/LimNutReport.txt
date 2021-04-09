@@ -1,0 +1,79 @@
+A PRIORI, global comparison without distinction by fitness ranks
+-----------------------------------------------------------------
+
+1) Multiple Comparative Analysis for N Limitations with M9-medium
+	- M9base
+	- M950N
+	- M9100N
+	- ¿Añadir M9200N?
+
+2) Multiple Comparative Analysis for N limitations with M9-medium, without sucrose limitation
+	- M9base
+	- M950N
+	- M9100N
+	- M9200N
+
+3) Multiple Comparative Analysis for N limitations with M9-medium, without sucrose / Pi limitations
+	- M9base
+	- M950N
+	- M9100N
+	- M9200N
+
+4) Multiple Comparative Analysis for each N-limitation configuration
+	- M9-medium
+	- M9-medium, without sucrose limitation
+	- M9-medium, without sucrose and Pi limitations
+	- Número de configuraciones dentro de la restricción SD
+	
+	
+Multiple Comparative Analysis: those configurations within the SD restriction criterion.
+
+	- Initial Biomass / Uptakes Rate ratios
+	- Final Product concentration
+	- Final Biomass concentration
+	
+	- Final nutrient concentration
+	- Final sucrose concentration
+	
+	- Death effect (initial cycle)
+	- Pi overtracking (if available)  <--- Pendiente revisar utilidad
+	
+
+---------------------------------------------------
+ASUNTOS PENDIENTES
+
+	- ¿Seguimos en la hipótesis de que una limitación de N (bajo qué condiciones) puede estimular la producción de naringenina, una vez se estabiliza el crecimiento de biomasa (sin que el bicho muera)? Comparativa con nuevo control M9base (...)
+	
+	
+NOTAS ÚTILES
+
+	- Bounds de captación de NH4 / Pi por bacterias: anotado Febrero
+	- Quimiostato (dice David): limitación de nutrientes + posterior adición de exceso de sustrato
+
+	
+
+
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

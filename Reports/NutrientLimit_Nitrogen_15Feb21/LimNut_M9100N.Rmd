@@ -1,0 +1,271 @@
+---
+title: "Untitled"
+author: "Iván Martín Martín"
+date: "27/2/2021"
+output: pdf_document
+---
+
+# M9 Base Configuration + 100 mM $NH_{4}$ {#M9100Config}
+
+### 1. Input Parameters  {#M9100Config_params}
+Note that this scenario has been run with a **SD cutoff value of (0.1)·(`avgfitness`)**. The original parameters used in the SMAC optimization were (`params.pcs` file):
+
+- **p1_sucr1 ordinal**: {-10,-8,-6,-4,-2} [-2]
+- **p2_biomassEc ordinal**: {0.3,0.35,0.4,0.45,0.5} [0.3]
+- **p3_frc2 ordinal**: {-20,-18,-16,-14,-12,-10,-8,-6,-4,-2} [-14]
+- **p4_biomassKT ordinal**: {0.05,0.1,0.15,0.20,0.25} [0.1]
+
+Moreover, the layout parameters to note were:
+
+- **Grid Size (inoculation point)**: 1, 1 (0, 0).
+- **Number of cycles**: 240.
+- **`maxSpaceBiomass` parameter**: 10.0 gL^-1^.
+- **M9 medium concentrations**. [NH4+] = 100 mM.
+
+The **fitness function** is represented here as **naringenin yield** (mM / gL^-1^): total production of this product (mM), divided by final KT biomass (gL^-1^).
+
+## 2. ScatterPlotMattrix results {#M9100Config_scatter}
+The correlation values for the current FLYCOP execution were^[Considering only those configurations fulfilling the SD restriction.]:
+
+* **fitFunc-sucr1**: -0.362 (similar tendency as M9base configuration, negative).
+* **fitFunc-frc2**: -0.290 (similar tendency as M9base configuration, negative).
+* **fitFunc-Ecbiomass**: 0.062 (initial biomass) (similar tendency as M9base configuration, slitghly positive).
+* **fitFunc-KTbiomass**: -0.240 (initial biomass) (different tendency as M9base configuration, negative in this case).
+* **Ecbiomass-KTbiomass**: 0.0788 (similar tendency as M9base configuration).
+
+## 3. Configuration Analysis & Ratios {#M9100Config_config}
+### 3.1. SD subdivision criterion {#M9100Config_config31} 
+In the current analysis, 100 final configurations were obtain, from which:
+
+- **42 cases had SD < (0.1)·(`avgfitness`)** (considered OK).
+
+- **20 cases had SD > (0.1)·(`avgfitness`)**.
+
+- **38 cases had SD > (0.1)·(`avgfitness`) and they also raised a ZeroDivisionError**. In all of these cases, *E.coli* was finally exhausted, with *P.putida KT* in final values around 10.0 gL^-1^ in 25 of 38 cases. Naringenin production was disproportionate in all 38 cases.
+
+### 3.2. Fitness Distribution {#M9100Config_config32}
+The set of fitness values (mM/ gL^-1^) obtained were classified in a series of ranks, namely:
+
+- **390 < x 501**: 9 values (462.630 ± 31.631).
+- **50 < x < 100**: 6 values (78.458 ± 16.326).
+- **10 < x < 25**: 8 values (15.635 ± 3.534).
+- **0 < x < 10**: 12 values (4.692 ± 2.540).
+
+There were some more values for the fitness function in the 42 cases with acceptable SD. However, they were specially high (x > 700; 5 values) or could not be easily included in any of the somewhat reasonable ranks established (2 values).
+
+### 3.3. Uptake Rates and Initial Biomass ratios {#M9100Config_config33}
+Firstly, figure 1 shows the change in the uptake rates ratio (sucrose by *E. coli* / fructose by KT) with the increase in fitness. The values for the **uptake rates ratios** in every rank were (mean ± SD):
+
+- **390 < x < 501**: 9 values (0.737 ± 0.167).
+- **50 < x < 100**: 6 values (0.946  ± 0.577).
+- **10 < x < 25**: 8 values (1.0568 ± 0.898).
+- **0 < x < 10**: 12 values (1.251 ± 1.428).
+
+Note that the commented plot includes those configurations with acceptable SD. In general, there are few values higher than 1 for this ratio parameter. If the scale is enlarged, it can be shown that ratio values for the lower fitness ranks (x < 100) are lower than 0.5; and they are between 0.5 and 1.0 for the highest fitness rank (x > 100). For those fitness values lower than 25 (mM / gL^-1^), the higher the fitness, the lower the ratio of uptake rates.
+
+In turn, figure 2 shows the change in the initial biomass ratio (E.coli/KT) with the increase in fitness. The values for the **initial biomass ratios** in every rank were (mean ± SD):
+
+- **390 < x 501**: 9 values (6.133 ± 2.929).
+- **50 < x < 100**: 6 values (4.467  ± 3.348).
+- **10 < x < 25**: 8 values (2.656 ± 0.976).
+- **0 < x < 10**: 12 values (2.653 ±  1.854).
+
+Note that the commented plot includes those configurations with acceptable SD. In general, there were values are spread between 0 and 10. For fitness lower than 100 mM / gL^-1^, the ratio values tend to be lower than 4; while being usually higher for fitness values higher than 100 mM / gL^-1^. For those fitness values lower than 25 (mM / gL^-1^), the ratio values tend to concentrate under 2.5.
+
+
+### 3.4. Final Naringenin and p-Coumarate concentrations {#M9100Config_config34}
+In addition, figure 3 shows the change in the final naringenin (Nar) and p-Coumarate (pCA) media concentrations with the increase in fitness^[There is an additional plot displaying Naringenin-to-pCA ratio vs. fitness. It is not shown for simplicity reasons, since it does not provide with different information from the already considered here.]. 
+
+The **final Nar concentration values** within every rank were (mean ± SD):
+
+- **390 < x 501**: 9 values (47.912 ± 5.941).
+- **50 < x < 100**: 6 values (80.681  ± 57.770).
+- **10 < x < 25**: 8 values (52.475  ± 40.530).
+- **0 < x < 10**: 12 values (21.664  ±  10.792).
+
+Note that the commented plot includes those configurations with acceptable SD. In general, the higher the fitness, the higher the final naringenin concentration; with an apparent upper bound (horizontal asymptote) of around 50 mM, for fitness values under or above 100 mM / gL^-1^. For those fitness values under 20 mM / gL^-1^, final naringenin concentration increases linearly with the increase in fitness.
+
+
+At the same time, the **final pCA concentration values** within every rank were (mean ± SD):
+
+- **390 < x 501**: 9 values (0.528 ± 0.783).
+- **50 < x < 100**: 6 values (1.290  ± 3.129).
+- **10 < x < 25**: 8 values (5.288 ± 9.764).
+- **0 < x < 10**: 12 values (9.995 ±  15.254).
+
+Note that the commented plot includes those configurations with acceptable SD. In general, the higher the fitness, the lower the final pCA concentration. Moreover, for those fitness values under 20 mM / gL^-1^, final pCA concentration tended to be 0, except for 6 cases.
+
+
+### 3.5. Final Biomass concentrations {#M9100Config_config35}
+In addition, figure 4 shows the change in the final biomass concentrations with the increase in fitness. The values for *E.coli* within every rank were (mean ± SD):
+
+- **390 < x 501**: 9 values (0.165 ± 0.166).
+- **50 < x < 100**: 6 values (0.222  ± 0.188).
+- **10 < x < 25**: 8 values (2.384 ± 2.468).
+- **0 < x < 10**: 12 values (3.940 ±  2.203).
+
+In turn, the values for KT within every rank were (mean ± SD):
+
+- **390 < x 501**: 9 values (0.106 ± 0.0196).
+- **50 < x < 100**: 6 values (1.0424  ± 0.737).
+- **10 < x < 25**: 8 values (3.148 ± 1.707).
+- **0 < x < 10**: 12 values (4.914 ±  1.543).
+
+Note that the commented plot includes those configurations with acceptable SD. In general, the higher the fitness, the lower the final biomass values for both microbes. For fitness values above 50 mM / gL^-1^, final biomass values tended to be under 1 gL^-1^ for both microbes. However, for fitness values under 25 mM / gL^-1^, final biomass was more variable: final *E.coli* values were between 0 and 6 gL^-1^, while final KT values were between 1.5 and 4.5 gL^-1^.
+
+
+### 3.6. Final $NH_{4}$ concentration {#M9100Config_config36}
+Finally, $NH_{4}$ was only exhausted in 5 of the 42 cases within the SD restriction. In those cases where the final concentration was not zero, the values were different depending on the fitness values:
+
+- Higher than 50 mM / gL^-1^: between 50 and 100 mM.
+- Lower than 20 mM / gL^-1^: there were two groups of points. In one of them, final $NH_{4}$ concentrations were between 50 and 75 mM. In the other one (slightly bigger group), final $NH_{4}$ concentrations were near 0.
+
+
+## 4. FLYCOP Plots Analysis {#M9100Config_Fplots}
+Finally, several plots from the FLYCOP output were considered in detail.
+
+### 4.1. Fitness rank: 390 < x 501 (462.630 ± 31.631)
+In all 9 configurations from this fitness rank, the *dead phase effect* was observed, starting early in the simulation (cycle 50-75), and being prolonged to the end of it. One of these configurations was analyzed.
+
+- Fitness value: 394.600 mM / gL^-1^.
+- Biomass growth stabilized around cycle 50 (near 5gL^-1^), when $NH_{4}$ was exhausted. However, from cycle 60-70 both microbes started to die, reaching final levels near 0 at the end of the simulation. As a consequence, $NH_{4}$ concentration started to grow at the moment the microbes started to die, reaching final levels near 100 mM.
+- Sucrose finally exhausted around cycle 60-70 (shortly before microbe dead phase, thus a potential consequence for this phenomenon.
+- $P_{i}$ finally exhausted at around cycle 60-70 (shortly after sucrose exhaustion). It is interesting to note that, in these cases, an intense $P_{i}$ consumption began when biomass started to die.
+- Fructose did not practically raise in the media during the simulation; except for minimum peaks at around cycle 60, when biomass reached the stationary phase. At the same time, p-Coumarate did not raised at any moment during the simulation.
+- Naringenin production was low at the beginning, starting to increase at the exponential growth phase (for microbes). However, the production increased when both microbes reached the stationary phase, and was finally reduced when these bacteria started to die, thus finally stopping (constant concentration to the end of the simulation). Final concentration around 50 mM.
+
+### 4.2. Fitness rank: 50 < x < 100 (78.458 ± 16.326)
+In all 6 configurations from this fitness rank, the *dead phase effect* was observed, starting early in the simulation (cycle 50-80), and being prolonged to the end of it. One of these configurations was analyzed.
+
+- Fitness value: 76.0472 mM / gL^-1^.
+- *E.coli* kept growing until cycle 60-70, when it stopped (near 7 gL^-1^) and immediately started to die. *P.putida KT* grew until shortly after *E.coli*, and then stabilized at near 2 gL^-1^ (but did not die, even if *E.coli* was dying). 
+- Sucrose finally exhausted around cycle 60-70, nearly at the same time *E.coli* started to die, thus a potential consequence for this last phenomenon.
+- $NH_{4}$ was never exhausted but reached its lowest value (10-20 mM) at *E.coli* biomass peak. At this time, in parallel with *E.coli* dying, it began to raise and reached a medium plateau around cycle 150. At this moment, it began to smoothly decrease to the end of the simulation.
+- $P_{i}$ finally exhausted at around cycle 100-110. It is interesting to note that an intense $P_{i}$ consumption began shortly after biomass started to die.
+- Fructose did raise to levels around 50-60 mM, in parallel to *E.coli* growth. At the time this bacteria started to die, fructose concentration decreased, reaching final values of 0 around cycle 100-110. However, it might have remained in residual concentrations that allowed for KT growth (or maintenance) during the rest of the simulation.
+- Naringenin production was low at the beginning, starting to increase when KT reached stationary phase. From this moment on, it kept linearly increasing at an important production rate until the end of the simulation. Final concentration around 150 mM.
+
+In one of the four executions for this particular configuration, $P_{i}$ concentration was exhausted at cycle 100, but about 10 to 20 cycles later it started to grow again: it increased linearly until final values of around 600 mM. The moment in time when $P_{i}$ overproduction started seemed to be when $NH_{4}$ began to decrease (after being produced by *E.coli* dying).
+
+### 4.3. Fitness rank: 10 < x < 25 (15.635 ± 3.534).
+In 6 out of 8 configurations from this fitness rank, the *dead phase effect* was observed. However, it did not start at the same time for all of them: in 3 cases, this effect started around cycles 50-75; in 2 cases, it started around cycles 100-110; and in one case, it began past at cycle 226 (very late within the simulation).
+
+Nevertheless, in 2 out of 8 configurations this effect was not observed. In particular, these 2 configurations had the highest fitness within the rank: 19.0857 mM / gL^-1^, with final naringenin 68.315 mM; and 22.273 mM / gL^-1^, with final naringenin 144.791 mM.
+
+The first one of these last two configurations was further analyzed.
+
+- Fitness value: 19.0857 mM / gL^-1^.
+- Both microbes grew until past the cycle 200, when they reach stationary phase at levels around 6 gL^-1^ for *E.coli* and 3 gL^-1^ for *P.putida* KT. Local growth irregularities were observed for KT during the process.
+- Growth detention for microbes might have been related to $NH_{4}$ exhaustion, which happened shortly before. Moreover, sucrose exhaustion did take place few cycles after $NH_{4}$ complete depletion.
+- Fructose and pCA did not raise at any moment during the simulation.
+- There was the effect of $P_{i}$ overproduction during the complete simulation, reaching a final concentration of near 700 mM.
+- Naringenin production was low at the beginning, starting to increase between cycles 100 and 150. It finally stopped at a concentration of 68.315 mM past the cycle 200, nearly at the same moment KT biomass increase was also stopped.
+
+### 4.4. Fitness rank: 0 < x < 10 (4.692 ± 2.540)
+In 6 out of 12 configurations from this fitness rank, the *dead phase effect* was observed. However, it did not start at the same time for all of them: in 2 cases, this effect started after cycle 200; in 2 cases, it started around cycles 50-60; and in another 2 cases, it began at cycle 111.
+
+Nevertheless, in the 6 remaining configurations this effect was not observed. The fitness values for these configurations were between 3.0 and 9.5. One of them was further analyzed.
+
+- Fitness value: 9.214 mM / gL^-1^.
+- Both microbes grew until around cycle 190, when they reach stationary phase at levels around 6 gL^-1^ for *E.coli* and 4 gL^-1^ for *P.putida* KT. Local growth irregularities were observed for KT during the process.
+- Growth detention for microbes might have been related to $NH_{4}$ exhaustion, which happened nearly at the same time.
+- Sucrose final levels were around 20 mM. Its consumption stopped when biomass growth did.
+- Fructose and pCA did not raise at any moment during the simulation. However, very subtle irregularities for the fructose purple line were observed in the plot.
+- $P_{i}$ consumption was very low, from 70 to 60 mM (approximately).
+- Naringenin production ran in parallel to KT growth and stopped when biomass reached the stationary phase, at final levels of around 40 mM.
+
+### 4.5. Other notes: effect of *dead phase* or final microbe exhaustion
+
+The four fitness ranks analyzed were:
+
+- **390 < x 501**: 9 values (462.630 ± 31.631).
+- **50 < x < 100**: 6 values (78.458 ± 16.326).
+- **10 < x < 25**: 8 values (15.635 ± 3.534).
+- **0 < x < 10**: 12 values (4.692 ± 2.540).
+
+For the first two ranks, all particular configurations did experience the *dead phase* effect. Moreover, for those configurations not analyzed (out of ranks considered), all values were also affected by this effect.
+
+In the two remaining ranks, final microbe exhaustion (for at least one of the bacteria) happened in 6 out of 8 and 6 out of 12 configurations. Thus it was less frequent in the lowest rank. It would be interesting to consider if this effect happened for just one or both microbes.
+
+In general, the number of values with the *dead phase* effect was:
+- **In the group of SD acceptable configurations**: 34 in 42 values.
+- **In the group of SD acceptable and non acceptable configurations**: 48 in 62 values.
+
+## 5. Comparative Analysis: Input Parameters *vs.* Fitness Ranks  {#M9100Config_boxplots}
+
+Several boxplots were computed for the evaluation of differences between the different fitness ranks within this FLYCOP run, depending on the input parameters (uptake rates and initial biomass values). In these plots, the independent categorical variable was represented by these fitness ranks, also including those configurations with fitness = 0 because of an excessive SD or given a 'ZeroDivisionError' during the execution.
+
+- **390 < x 501**: rank 4 (9 values).
+- **50 < x < 100**: rank 3(6 values).
+- **10 < x < 25**: rank 2 (8 values).
+- **0 < x < 10**: rank 1 (12 values).
+- **Fitness = 0, excessive SD**: rank 0 (20 values).
+- **Fitness = 0, `ZeroDivisionError`**: rank -1 (38 values). Note that SD in these configurations is also excessive.
+
+
+Recall here Figures 1 and 2 in [section 3.3](#M9100Config_config33). An important limitation of these boxplots is that the different fitness ranks did not have the same number of values. Ranks -1 and 0 had (much) more values than the rest of considered groups. Note the structure of boxes is: mean ± 1.5 * IQR.
+
+The first of these plots represented the **ratio of uptake rates** (Sucrose by *E.coli* / Fructose by *P.putida KT*) against the fitness ranks considered.
+
+* Firstly, the `ZeroDivisionError` (-1) fitness rank and the excessive SD (0) fitness rank had mean values around 0.4 and 0.6, respectively; being both boxes (whiskers included) under the value of 1.0 for the ratio measure.
+
+* The medium fitness ranks boxes (1: x < 10; 2: 10 < x < 25) were quite long, with lower limits around 0.25 (both) and upper limits of 4.0 and 2.5, respectively. The third fitness rank (3: 50 < x < 100) had its mean around 0.70, with limits such as 0.4 - 1.6.
+
+* Finally, the highest fitness rank (4: 390 < x < 501) was quite short, with its mean value around 0.8 and limits such as 0.5 - 1.0.
+
+* In general, the mean was higher and the spread of values was more notable for the valid fitness ranks than for the ranks with fitness = 0 (-1, 0); except for the mean in fitness rank 1. However, the reason why these invalid configurations were so would need to take into account also the ratio of initial biomass and, possibly, the evolution of the consortium during the simulation.
+
+The second of these plots represented the **ratio of initial biomass** inoculated in the media (*E.coli* / *P.putida KT*), against the fitness ranks considered.
+
+* Firstly, the `ZeroDivisionError` (-1) fitness rank had a mean value around 2.4-2.5 and limits such as 0.6-5.0 (approx.); and the excessive SD (0) fitness rank had a mean value around 3.0-3.4 and limits such as 0.6-9.0 (approx.).
+
+* The medium fitness ranks (1: x < 10) and (2: 10 < x < 25) had mean values of 2.0 and 2.3-2.4 (approx.), and limits of 0.8-3.4 and 1.4-4.0 (approx.); respectively. In short, these valid ranks (1, 2) were more contained than the invalid fitness ranks, though the main set of values for rank n.2 was similar to that of the rank n.(-1).
+
+* The third fitness rank (3: 50 < x < 100) had its mean (3.0-3.4) nearly equivalent to that of the SD excessive fitness rank, with a similar lower limit but a slightly higher upper limit. Nevertheless, they were comparable to some extent.
+
+* The fourth fitness rank had its mean value (6.0) in its lower limit, with and upper limit of 10.0. Thus it was out of the scope of any of the other fitness ranks here displayed. 
+
+* In general, invalid fitness ranks n.(-1) and n.(0) were somewhat comparable with ranks 2 (10 < x < 25) and 3 (50 < x < 100), respectively. 
+
+---
+### Pendiente revisar
+Pendiente analizar DeadTracking: ¿para uno o los dos microbios?
+Comparative Analysis: ¿Mayor disparidad de biomasas en valores menores de fitness?
+
+**Principales concerns**:
+
+* Por defecto, cuando se agota el nitrógeno y se detiene el crecimiento de biomasa, se inicia una producción (un tanto) más acelerada de naringenina. ¿Seguro en esta configuración? En menor medida, considerar que aquí hay más nitrógeno que en el medio M9base.
+* En algunos casos, este efecto está acompañado de producción de Pi.
+* En esta configuración, se observa de forma frecuente el denominado *dead phase effect*. Potenciales motivos: limitación de N (con seguridad), equilibrio de biomasas (pendiente revisar).
+* SD elevadas, en general. 
+* No aprecio diferencias determinantes en parámetros de entrada para las configuraciones con SD excesiva o `ZeroDivisionError` y las configuraciones aceptadas.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

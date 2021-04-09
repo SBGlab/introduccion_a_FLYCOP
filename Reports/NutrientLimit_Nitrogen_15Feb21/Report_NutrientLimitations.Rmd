@@ -1,0 +1,1481 @@
+---
+title: "First report on Nutrient Limitations in M9-medium for the E.coli iEC1364_W - P.putida iJN1463 consortium"
+# author: "Iván Martín Martín"
+date: "15/02/2021 - 17/03/2021"
+output: pdf_document
+---
+
+```{r, include = FALSE}
+colorize <- function(x, color) {
+  if (knitr::is_latex_output()) {
+    sprintf("\\textcolor{%s}{%s}", color, x)
+  } else if (knitr::is_html_output()) {
+    sprintf("<span style='color: %s;'>%s</span>", color, 
+      x)
+  } else x
+}
+
+# USE: Using now color `r colorize("red", "red")`.
+```
+
+# 0. Preliminary Notes {#Prel_Notes}
+
+## A. Input Parameters {#Input_Params}
+Note that all scenarios have been run with a **SD cutoff value of (0.1)·(`avgfitness`)**. The original parameters used in the SMAC optimization were (`params.pcs` file):
+
+- **p1_sucr1 ordinal**: {-10,-8,-6,-4,-2} [-2]
+- **p2_biomassEc ordinal**: {0.3,0.35,0.4,0.45,0.5} [0.3]
+- **p3_frc2 ordinal**: {-20,-18,-16,-14,-12,-10,-8,-6,-4,-2} [-14]
+- **p4_biomassKT ordinal**: {0.05,0.1,0.15,0.20,0.25} [0.1] \newline
+
+Moreover, the layout parameters to note were:
+
+- **Grid Size (inoculation point)**: 1, 1 (0, 0).
+- **Number of cycles**: 240.
+- **`maxSpaceBiomass` parameter**: 10.0 gL^-1^.
+- **M9 medium concentrations**. At this level, the main difference between FLYCOP runs is [$NH_{4}$] initial concentration (pivotal parameter around which this report articulates. On top of the N limitations, sucrose and $P_{i}$ initial levels were further considered in the different sets of Comparative Analysis.
+
+The **fitness function** is represented here as **naringenin yield** (mM / gL^-1^): total production of this product (mM), divided by final KT biomass (gL^-1^). \newline
+
+## B. How this report is structured {#How_structured}
+
+A series of several Comparative Analyses was performed and is here analyzed. *Comparative analysis* means that different FLYCOP runs that differed in [$NH_{4}$] initial concentration were globally compared between them, without distinction by fitness ranks within each run. The series of Comparative Analyses performed was the following: 
+
+1) **Multiple Comparative Analysis for N Limitations with M9-medium**. 69.9 mM $P_{i}$, 100 mM sucrose (initial concentrations).
+	- M9base: 18.7 mM [$NH_{4}$].
+	- M950N: 50 mM [$NH_{4}$].
+	- M9100N: 100 mM [$NH_{4}$]. \newline
+
+2) **Multiple Comparative Analysis for N limitations with M9-medium, without sucrose limitation**. Microbes death (both microbes or just one of them) in many configurations of the last Analysis led to the hypothesis that sucrose limitation (100 mM initially) might be influencing this *death effect*. Therefore, the same scenarios were run, without sucrose limitation (1000 mM); and this particular effect was exclusively considered.
+
+	- M9base: 18.7 mM [$NH_{4}$].
+	- M950N: 50 mM [$NH_{4}$].
+	- M9100N: 100 mM [$NH_{4}$].
+	- M9200N: 200 mM [$NH_{4}$]. *New FLYCOP run added to amplify the scope of the Analysis*. \newline
+
+3) **Multiple Comparative Analysis for N limitations with M9-medium, without sucrose / $P_{i}$ limitations**. Even without sucrose limitation, the *death effect* was still observed. Since in a notable number of configurations with [$NH_{4}$] final exhaustion, $P_{i}$ final exhaustion was also observed, a further analysis was performed with neither sucrose nor $P_{i}$ limitation. Note that in M9-medium, initial $P_{i}$ was 69.9 mM, thus it was changed to 1000 mM.
+
+	- M9base: 18.7 mM [$NH_{4}$].
+	- M950N: 50 mM [$NH_{4}$].
+	- M9100N: 100 mM [$NH_{4}$].
+	- M9200N: 200 mM [$NH_{4}$]. *New FLYCOP run added to amplify the scope of the Analysis*. \newline
+
+4) **Multiple Comparative Analysis for each N-limitation configuration**. Finally, for every set of FLYCOP runs of N limitation (M9base, M950B, M9100N, M9200N), a final comparative analysis was performed to further assess the effects of sucrose un-limitation and sucrose+$P_{i}$ un-limitation with respect to the initial case (M9-medium based).
+	- M9-medium standard.
+	- M9-medium, without sucrose limitation (1000 mM).
+	- M9-medium, without sucrose and Pi limitation (1000 mM). \newline
+	
+	
+On the other hand, it is important to notice:
+
+* In every Multiple Comparative Analysis, **only those configurations within the SD restriction criterion** (10% SD, Standard Deviation) were considered.
+
+* **Standard levels of [$NH_{4}$] in M9 reference medium are quite restrictive**: actually, the more restrictive here considered. However, in the papers reviewed, nutrient limitation levels for N & P are considered as:
+  - [$NH_{4}$]: 10 to 20 mM as initial concentration (4 references).
+  - $P_{i}$: 6.50 mM as initial concentration (1 reference).
+  
+  In the current case, initial concentrations for both nutrients were usually higher than in those references, but still seemed to imply an important growth limitation. In this respect, FLYCOP simulation extent here used (240 cycles) was probably related to this issue and might need to be adapted.
+
+* The **dependent variables considered** in every Comparative Analysis were the following.
+  
+  - Uptake Rates ratio (sucrose by *E.coli* / fructose by *P.putida*)
+  - Initial Biomass ratio (*E.coli* / *P.putida*)
+
+	- Final Product concentration (p-coumarate, naringenin).
+	- Final Biomass concentration (*E.coli*, *P.putida*).
+	
+	- Final nutrient concentration ([$NH_{4}$], $P_{i}$).
+	- Final sucrose concentration.
+	
+	- Death effect (initial cycle) (if it was developed before obtaining the correspondent FLYCOP output).
+	- Pi overproduction configurations (if it was developed before obtaining the correspondent FLYCOP output).
+
+\newpage
+# 1. Multiple Comparative Analysis for N Limitations with M9-medium {#NLim_M9}
+
+For this first Comparative Analysis, the FLYCOP runs considered had 69.9 mM [$P_{i}$] and 100 mM [sucrose] as initial concentrations. They just differed on the initial [$NH_{4}$] concentration.
+
+* **M9base**: 18.7 mM [$NH_{4}$]. 43 configurations within the SD restriction criterion.
+* **M950N**: 50 mM [$NH_{4}$]. 44 configurations within the SD restriction criterion.
+* **M9100N**: 100 mM [$NH_{4}$]. 42 configurations within the SD restriction criterion.
+* **M9200N**: 200 mM [$NH_{4}$]. 49 configurations within the SD restriction criterion.
+
+There is a complete analysis for each of these FLYCOP runs available (except for *M9200N*). If it is desired to check the differences in the uptake rates ratio or initial biomass ratio for the different ranks within each of these FLYCOP runs, it is also available. \newline
+	
+On the other hand, the **dependent variables considered** in this comparative analysis were the following.
+  
+* Uptake Rates ratio (sucrose by *E.coli* / fructose by *P.putida*)
+* Initial Biomass ratio (*E.coli* / *P.putida*)
+* Final Product concentration (p-coumarate, naringenin).
+* Final Biomass concentration (*E.coli*, *P.putida*).
+* Final nutrient concentration ([$NH_{4}$], $P_{i}$).
+
+## 1.1. Input Parameters ratios {#NLim_M9_inputpar}
+
+* The ratio for **initial biomass** (*E.coli*/*P.putida*) seemed similar for all four configurations, as shown in the scatterplot on the left. The cloud of points ranged from a lower limit of around 0.5 to an upper limit of 9 to 10. However, most of the values for the four FLYCOP runs were concentrated under the value of 4.0. Note: a few more outliers for [$NH_{4}$] = 100, 200 mM.
+
+* Again, the ratio for **uptake rates** (sucrose / fructose) seemed similar for all four configurations, as shown in the scatterplot on the right. The cloud of points ranged from a lower limit near 0 to an upper limit of 5. However, most of the values for the three FLYCOP runs were concentrated under the value of 1.0.
+
+![Initial Biomass ratio for the FLYCOP runs considered.](Report_NutrientLimitations_images/M9/initBratio_multiplescatter.png){width=50%}
+![Uptake Rates ratio for the FLYCOP runs considered.](Report_NutrientLimitations_images/M9/uptakeRratio_multiplescatter.png){width=50%}
+
+## 1.2. Final Biomass concentration {#NLim_M9_finalb}
+
+* **Final *E.coli* biomass** was higher, the higher the initial value of [$NH_{4}$]. While for initial [$NH_{4}$] = 18.7 mM, the highest values were around 1.5-2.0 gL^-1^; for initial [$NH_{4}$] = 50 mM, they came up to around 4.0 gL^-1^; and for initial [$NH_{4}$] = 100, 200 mM, up to 6.0 gL^-1^. For these last two configurations, there was a reduced concentration of points between 1.0 to 4.0 gL^-1^: the highest values clustered around 4.0-5.0 to 6.5 gL^-1^.
+
+* The same effect was observed **for *P.putida KT* biomass**. While for initial [$NH_{4}$] = 18.7 mM, the highest values were around 2.0 gL^-1^; for initial [$NH_{4}$] = 50 mM, they came up to around 6.0 gL^-1^; and for initial [$NH_{4}$] = 100, 200 mM, up to nearly 8.0 gL^-1^. The higher the initial $NH_{4}$ levels, the higher the upper limit for values of final biomass. 
+
+![Final E.coli biomass.](Report_NutrientLimitations_images/M9/finalEc_multiplescatter.png){width=50%}
+![Final P.putida biomass.](Report_NutrientLimitations_images/M9/finalKT_multiplescatter.png){width=50%}
+
+## 1.3. Final Product concentration {#NLim_M9_finalp}
+
+* **Final naringenin concentration** displayed several outliers in all four FLYCOP runs, with disproportionate values above 100 mM. Apart from these, all four runs produced the same range of final naringenin values, from near 0 to 50 mM. For [$NH_{4}$] = 18.7 mM, most of the points were concentrated under 50 mM, with a small group between 75 to 100 mM. In turn, for [$NH_{4}$] = 50, 200 mM, the upper limit was around 70-75 mM (slightly higher). Finally, for [$NH_{4}$] = 100 mM, this upper limit was around 55 to 60 mM (a few outliers between 50 to 100 mM for all groups).
+
+* **Final pCA concentration** near 0 or 0 mM were the following ones for each FLYCOP runs.
+
+  - **M9base**. 35 in 43 (81%). The rest of points ranged from 0 to nearly 20 mM.
+  - **M950N**. 34 in 44 (77%). The rest of points ranged from 0 to 30 mM.
+  - **M9100N**. 32 in 42 (76%). The rest of points ranged from 0 to 35-40 mM.
+  - **M9200N**. 24 in 49 (49%). The rest of points ranged from 0 to slightly more than 40 mM.
+
+Thus for those values that were not 0, the higher the initial [$NH_{4}$] concentration, the higher the final pCA value.
+
+
+![Final naringenin.](Report_NutrientLimitations_images/M9/finalnar_multiplescatter.png){width=50%}
+![Final pCA](Report_NutrientLimitations_images/M9/finalpca_multiplescatter.png){width=50%}
+
+## 1.4. Final Nutrients concentration (N, P) {#NLim_M9_finalnut}
+
+* With respect to **final [$NH_{4}$] concentrations**, for all three FLYCOP configurations there were a group of values of final [$NH_{4}$] = 0 mM, except for [$NH_{4}$] = 200 mM; and a more dispersed group of points whose upper limit was around the respective initial [$NH_{4}$] value for each FLYCOP run. It is interesting to consider the final [$NH_{4}$] values equivalent to 0 for each FLYCOP run.
+
+  - [$NH_{4}$] = 18.7 mM. 31 in 43 (72%).
+  - [$NH_{4}$] = 50 mM. 22 in 44 (50%).
+  - [$NH_{4}$] = 100 mM. 9 in 42 (21%).
+  - [$NH_{4}$] = 200 mM. 0 in 49 (0%).
+  
+As seen in these values, the higher the initial [$NH_{4}$] concentration, the lower the final [$NH_{4}$] values = 0 mM.
+  
+* With respect to **final $P_{i}$ concentrations**, the values obtained within the different FLYCOP runs were the following ones.
+  
+  * **Configuration:  18.7 mM [NH4]**
+    - The number of low final [Pi] (under 1 mM) was:  32 in 43 (**74%**).
+    - The number of intermediate final [Pi] (10-55 mM) was:  2 in 43.
+    - The number of final [Pi] near original concentration (55-69.9 mM) was:  3 in 43.
+    - The number of higher than initial or disproportionate final [Pi] (higher than 69.9 mM) was:  6 in 43. In these 6 cases, final [$NH_{4}$] ~ 0 mM.
+    - The number of final [Pi] nearly 0 with final [nh4] nearly 0 was:  21 in 43. \newline
+    
+  * **Configuration:  50 mM [NH4]**
+    - The number of low final [Pi] (under 1 mM) was:  26 in 44 (**59%**).
+    - The number of intermediate final [Pi] (10-55 mM) was:  4 in 44.
+    - The number of final [Pi] near original concentration (55-69.9 mM) was:  6 in 44.
+    - The number of higher than initial or disproportionate final [Pi] (higher than 69.9 mM) was:  8 in 44. In these 8 cases, final [$NH_{4}$] ~ 0 mM.
+    - The number of final [Pi] nearly 0 with final [nh4] nearly 0 was:  10 in 44. \newline
+
+  * **Configuration:  100 mM [NH4]**
+    - The number of low final [Pi] (under 1 mM) was:  27 in 42 (**64%**).
+    - The number of low final [Pi] (between 1 to 10 mM) was:  2 in 42.
+    - The number of intermediate final [Pi] (10-55 mM) was:  2 in 42.
+    - The number of final [Pi] near original concentration (55-69.9 mM) was:  9 in 42.
+    - The number of higher than initial or disproportionate final [Pi] (higher than 69.9 mM) was:  2 in 42. In these 2 cases, final [$NH_{4}$] ~ 0 mM.
+    - The number of final [Pi] nearly 0 with final [nh4] nearly 0 was:  3 in 42. \newline
+
+  * **Configuration:  200 mM [NH4]**
+    - The number of low final [Pi] (under 1 mM) was:  18 in 49 (**36%**).
+    - The number of low final [Pi] (between 1 to 10 mM) was:  0 in 49.
+    - The number of intermediate final [Pi] (10-55 mM) was:  5 in 49.
+    - The number of final [Pi] near original concentration (55-69.9 mM) was:  21 in 49.
+    - The number of higher than initial or disproportionate final [Pi] (higher than 69.9 mM) was:  5 in 49. In none of these cases, [$NH_{4}$] ~ 0 mM.
+    - The number of final [Pi] nearly 0 with final [nh4] nearly 0 was:  0 in 49. \newline
+
+
+In general, the main aspects to be considered were: i) the number of configurations with very low final $P_{i}$ or 0 did slightly decrease from the FLYCOP run [$NH_{4}$] = 18.7 mM, to the FLYCOP runs [$NH_{4}$] = 200 mM; ii) there was a certain number of configurations with $P_{i}$ production in all FLYCOP runs; iii) the higher the initial [$NH_{4}$] concentrations, the lower the number of configurations with [$NH_{4}$] ~ 0 mM, that also had [$P_{i}$] ~ 0.
+
+![Final NH4](Report_NutrientLimitations_images/M9/finalNH4_multiplescatter.png){width=50%}
+![Final Pi](Report_NutrientLimitations_images/M9/finalpi_multiplescatter.png){width=50%}
+
+## 1.5. Conclusion and Further Implementing {#NLim_M9_conc}
+
+* Regardless of the initial [$NH_{4}$] concentration, the **ratios for the optimal input parameters** (initial biomass, uptake rates) seemed to converge for the three FLYCOP runs. 
+
+  - **Initial Biomass ratio** (*E.coli* / *P.putida*) points clustered between 0.5 to 3.0-4.0.
+  - **Uptakes Rates ratio** (sucrose / fructose) points clustered under 1.0.
+
+* The initial [$NH_{4}$] concentration conditioned the final biomass concentrations reached: the higher this initial concentration, the higher the final *E.coli* and *P.putida* biomass. This was an expected effect, since $NH_{4}$ is an essential nutrient for biomass growth.
+
+* **Final naringenin concentration** did not vary substantially (in special, those final values within proportional limits) between the three FLYCOP runs considered.
+
+* However, interestingly, **final pCA concentration** (upper values) were higher, the higher the initial [$NH_{4}$] concentration; possibly due to the higher final *E.coli* biomass values with the increase in initial $NH_{4}$. Nevertheless, this issue raises the question of why this same effect was not observed for the case of *P.putida* and naringenin, since final *P.putida* biomass did also vary between the different FLYCOP runs.
+
+  A potential explanation (to be further check) is that *P.putida* would not be as dependent as *E.coli* on $NH_{4}$ for biomass growth.
+
+* As expected for **nitrogen limitations**, the higher the initial [$NH_{4}$], the higher the final [$NH_{4}$] concentration.
+
+* With respect to **final [$P_{i}$] values**, the number of configurations with complete $P_{i}$ consumption decreased with the increase in [$NH_{4}$] initial values.
+
+  Similarly, the number of configurations with final [$P_{i}$] near 0, having [$NH_{4}$] ~ 0, did substantially decrease as the initial [$NH_{4}$] increased.
+  
+  Thus there might be an interaction effect, to be further check, between nitrogen exhaustion and $P_{i}$ final levels. It is also worth noticing that, in all FLYCOP runs, there were some cases with $P_{i}$ production: for initial [$NH_{4}$] = 18.7, 50, 100 mM, with final $NH_{4}$ exhaustion; for initial [$NH_{4}$] = 200 mM, with no final exhaustion. \newline
+
+  
+With these **preliminary conclusions**, the further implementation headed for: a) determining the influence of sucrose limitation in this nitrogen limited consortium, b) considering this potential interaction between $NH_{4}$ and $P_{i}$ levels (notice that 69.9 mM [$P_{i}$] might also be limiting to some extent).
+
+For these analyss, further utilities were added, namely:
+
+* **Biomass Death Tracking**: considering whether there is loss of one or both microbes within each individual simulation, and where appropriate, in which cycle it starts.
+* **$P_{i}$ Overconsumption Tracking**: considering cases of $P_{i}$ overconsumption in a few cycles time, and where appropriate, when this effect starts. *`r colorize("Pendiente implementar", "red")`*.
+
+
+\newpage
+# 2. Multiple Comparative Analysis for N limitations with M9-medium, without sucrose limitation {#NLim_M9_nonSucr}
+
+For this second comparative analysis, the FLYCOP runs considered had 69.9 mM $P_{i}$ and 1000 mM sucrose as initial concentrations. They just differed on the initial $NH_{4}$ concentration.
+
+- **M9base**: 18.7 mM [$NH_{4}$]. 77 configurations within the SD restriction criterion.
+- **M950N**: 50 mM [$NH_{4}$]. 77 configurations within the SD restriction criterion.
+- **M9100N**: 100 mM [$NH_{4}$]. 43 configurations within the SD restriction criterion.
+- **M9200N**: 200 mM [$NH_{4}$]. 30 configurations within the SD restriction criterion.
+	
+It is worth noticing that the number of final configurations evaluated for the FLYCOP runs *M9base* and *M950N* were notably more abundant than for *M9100N* and specially for *M9200N*. \newline
+	
+On the other hand, the **dependent variables considered** in this comparative analysis were the following.
+  
+- Uptake Rates ratio (sucrose by *E.coli* / fructose by *P.putida*)
+- Initial Biomass ratio (*E.coli* / *P.putida*)
+- Final Product concentration (p-coumarate, naringenin).
+- Final Biomass concentration (*E.coli*, *P.putida*).
+- Final nutrient concentration ($NH_{4}$, $P_{i}$).
+- Final sucrose concentration.
+- Death Effect (if present): initial cycle where it started.
+	
+	
+## 2.1. Input Parameters ratios {#NLim_M9_nonSucr_inputpar}
+
+* The ratio for **initial biomass** (*E.coli*/*P.putida*) seemed similar for all four configurations, as shown in the scatterplot on the left. The cloud of points ranged from a lower limit of around 0.5 to an upper limit of 9 to 10. However, most of the values for the FLYCOP runs were concentrated under the value of 4.0.
+
+* Again, the ratio for **uptake rates** (sucrose / fructose) seemed similar for all four configurations, as shown in the scatterplot on the right. The cloud of points ranged from a lower limit near 0 to an upper limit of 5. However, most of the values for the FLYCOP runs were concentrated under the value of 1.0. For the run [$NH_{4}$] = 200 mM, the clustering of points under 1.0 was smaller, but this might be also due to the reduced number of configurations (points) evaluated for this run.
+
+![Initial Biomass ratio for the FLYCOP runs considered.](Report_NutrientLimitations_images/nonSucr/initBratio_multiplescatter.png){width=50%}
+![Uptake Rates ratio for the FLYCOP runs considered.](Report_NutrientLimitations_images/nonSucr/uptakeRratio_multiplescatter.png){width=50%}
+
+## 2.2. Final Biomass concentration {#NLim_M9_nonSucr_finalb}	
+
+* **Final *E.coli* biomass** tended to be higher, the higher the initial value of [$NH_{4}$]. For initial [$NH_{4}$] = 18.7 mM, the points clustered between 1.0-2.2 gL^-1^; while for initial [$NH_{4}$] = 50 mM, they were concentrated between 2.5-5.0 gL^-1^.  However, in the cases of [$NH_{4}$] = 100, 200 mM, final *E.coli* biomass ranged from lower values around 1.0 to upper values around 8.0 gL^-1^.
+
+* The same effect was observed **for *P.putida KT* biomass**. While for initial [$NH_{4}$] = 18.7 mM, the highest values were around 1.0-1.2 gL^-1^; for initial [$NH_{4}$] = 50 mM, they came up to around 2.0-2.5 gL^-1^. At the same time, final *P.putida* values for [$NH_{4}$] = 100, 200 mM ranged from the same lower value than the two previous FLYCOP runs, to around 6.0 gL^-1^ as the upper limit.
+
+![Final E.coli biomass.](Report_NutrientLimitations_images/nonSucr/finalEc_multiplescatter.png){width=50%}
+![Final P.putida KT biomass.](Report_NutrientLimitations_images/nonSucr/finalKT_multiplescatter.png){width=50%}
+
+## 2.3. Final Product concentration {#NLim_M9_nonSucr_finalp}
+
+* As for **final naringenin concentration**, in the first FLYCOP run ([$NH_{4}$] = 18.7 mM) the cloud of points clustered between 0 to around 60 mM. At the same time, for runs [$NH_{4}$] = 50, 100 mM; the respective clouds of points ranged from 0 to around 130 mM; with some higher outliers. Finally, for the case [$NH_{4}$] = 200 mM, the cloud of points was similar to the two previous ones, but with less concentration of points between 50 and 125 mM.
+
+* As for **final pCA concentration**, this value was 0 or near 0 for an important number of configurations in all FLYCOP runs. However, it was slightly lower for the last FLYCOP run (higher initial [$NH_{4}$]).
+
+  - [$NH_{4}$] = 18.7 mM: 36 in 77 values (47%).
+  - [$NH_{4}$] = 50 mM: 44 in 77 values (57%).
+  - [$NH_{4}$] = 100 mM: 21 in 43 values (49%).
+  - [$NH_{4}$] = 200 mM: 9 in 30 values (30%).
+
+  The rest of the values for each run ranged from 0 to a different upper limit.
+
+  - [$NH_{4}$] = 18.7 mM: upper limit around 60 mM.
+  - [$NH_{4}$] = 50, 100, 200 mM: upper limit around 100 mM. Certain outliers for [$NH_{4}$] ~ 200 mM.
+
+
+![Final naringenin.](Report_NutrientLimitations_images/nonSucr/finalnar_multiplescatter.png){width=50%}
+![Final pCA.](Report_NutrientLimitations_images/nonSucr/finalpca_multiplescatter.png){width=50%}
+
+## 2.4. Final Nutrients concentration (N, P) {#NLim_M9_nonSucr_finalnut}
+
+With respect to **final [$NH_{4}$] concentrations**, the distribution of points was as follows.
+
+  - [$NH_{4}$] = 18.7 mM. 76 in 77 values, 0 or near 0 mM. 1 outlier (~150 mM).
+  - [$NH_{4}$] = 50 mM. 77 in 77 values, 0 or near 0 mM.
+  - [$NH_{4}$] = 100 mM. 26 in 43. The rest of points were distributed between 0 to around 60 mM.
+  - [$NH_{4}$] = 200 mM. 10 in 30. The rest of points were distributed between 0 to around 140-150 mM.
+  
+As seen in these values, the higher the initial [$NH_{4}$] concentration, the lower the final [$NH_{4}$] values = 0 mM. \newline
+  
+With respect to **final $P_{i}$ concentrations**, the values obtained within the different FLYCOP runs were the following ones.
+
+* **Configuration:  18.7 mM [NH4]**:
+
+  - The number of low final [Pi] (under 1 mM) was:  48 in 77 (62%).
+  - The number of low final [Pi] (between 1 to 10 mM) was:  6 in 77.
+  - The number of intermediate final [Pi] (10-55 mM) was:  15 in 77.
+  - The number of final [Pi] near original concentration (55-69.9 mM) was:  3 in 77.
+  - The number of higher than initial or disproportionate final [Pi] (higher than 69.9 mM) was: 5 in 77.
+  - The number of final disproportionate [Pi] with final [nh4] nearly 0 was: 5 in 77.
+  - The number of final [Pi] nearly 0 with final [nh4] nearly 0 was:  48 in 77. \newline
+
+* **Configuration:  50 mM [NH4]**:
+
+  - The number of low final [Pi] (under 1 mM) was:  62 in 77 (80%).
+  - The number of low final [Pi] (between 1 to 10 mM) was:  2 in 77.
+  - The number of intermediate final [Pi] (10-55 mM) was:  4 in 77.
+  - The number of final [Pi] near original concentration (55-69.9 mM) was:  3 in 77.
+  - The number of higher than initial or disproportionate final [Pi] (higher than 69.9 mM) was:  6 in 77.
+  - The number of final disproportionate [Pi] with final [nh4] nearly 0 was:  6 in 77.
+  - The number of final [Pi] nearly 0 with final [nh4] nearly 0 was:  62 in 77. \newline
+
+* **Configuration:  100 mM [NH4]**:
+
+  - The number of low final [Pi] (under 1 mM) was:  20 in 43 (46%).
+  - The number of low final [Pi] (between 1 to 10 mM) was:  9 in 43.
+  - The number of intermediate final [Pi] (10-55 mM) was:  2 in 43.
+  - The number of final [Pi] near original concentration (55-69.9 mM) was:  9 in 43.
+  - The number of higher than initial or disproportionate final [Pi] (higher than 69.9 mM) was:  3 in 43.
+  - The number of final disproportionate [Pi] with final [nh4] nearly 0 was:  3 in 43.
+  - The number of final [Pi] nearly 0 with final [nh4] nearly 0 was:  17 in 43. \newline
+
+* **Configuration:  200 mM [NH4]**:
+
+  - The number of low final [Pi] (under 1 mM) was:  16 in 30 (53%).
+  - The number of low final [Pi] (between 1 to 10 mM) was:  4 in 30.
+  - The number of intermediate final [Pi] (10-55 mM) was:  1 in 30.
+  - The number of final [Pi] near original concentration (55-69.9 mM) was:  5 in 30.
+  - The number of higher than initial or disproportionate final [Pi] (higher than 69.9 mM) was:  4 in 30.
+  - The number of final disproportionate [Pi] with final [nh4] nearly 0 was:  0 in 30.
+  - The number of final [Pi] nearly 0 with final [nh4] nearly 0 was:  10 in 30. \newline
+  
+It is interesting to note that for runs with initial [$NH_{4}$] = 18.7, 50 mM, the number of final values with [$P_{i}$] under 1 mM or 0 was higher (in proportion) than for runs with initial [$NH_{4}$] = 100, 200 mM. In particular, in all of these cases where $P_{i}$ was finally exhausted in the first two runs, $NH_{4}$ was also exhausted. However, this effect of coupled final exhaustion of both nutrients ($P_{i}$ exhausted, with $NH_{4}$ exhausted) happened with an inferior frequency for the last two runs with higher initial [$NH_{4}$]. \newline
+
+  - **[$NH_{4}$] = 18.7 mM**. Number of final [pi] ~ 0 mM: 48 in 77. Number of final [pi] ~ 0 mM with final [nh4] ~ 0 mM: 48 in 77. 100% of cases with final [pi] ~ 0 mM implied final [nh4] ~ 0 mM (48/48).
+  
+  - **[$NH_{4}$] = 50 mM**. Number of final [pi] ~ 0 mM: 62 in 77. Number of final [pi] ~ 0 mM with final [nh4] ~ 0 mM: 62 in 77. 100% of cases with final [pi] ~ 0 mM implied final [nh4] ~ 0 mM (62/62).
+  
+  - **[$NH_{4}$] = 100 mM**. Number of final [pi] ~ 0 mM: 20 in 43. Number of final [pi] ~ 0 mM with final [nh4] ~ 0 mM: 17 in 43. 85% of cases with final [pi] ~ 0 mM implied final [nh4] ~ 0 mM (17/20).
+  
+  - **[$NH_{4}$] = 200 mM**. Number of final [pi] ~ 0 mM: 16 in 30. Number of final [pi] ~ 0 mM with final [nh4] ~ 0 mM: 10 in 30. 62.5% of cases with final [pi] ~ 0 mM implied final [nh4] ~ 0 mM (10/16). \newline
+  
+  
+At the same time, all those (unfrequent cases) of $P_{i}$ overproduction for the first three runs happened under $NH_{4}$ exhaustion. However, this same situation did not happen for the run with initial [$NH_{4}$] = 200 mM. \newline
+
+  - **[$NH_{4}$] = 18.7 mM**. Number of final [pi] > 69.9 mM: 5 in 77. Number of final [pi] > 69.9 mM with final [nh4] ~ 0 mM: 5 in 77. 100% of cases with final [pi] > 69.9 mM implied final [nh4] ~ 0 mM (5/5).
+  
+  - **[$NH_{4}$] = 50 mM**. Number of final [pi] > 69.9 mM: 6 in 77. Number of final [pi] > 69.9 mM with final [nh4] ~ 0 mM: 6 in 77. 100% of cases with final [pi] > 69.9 mM implied final [nh4] ~ 0 mM (6/6).
+  
+  - **[$NH_{4}$] = 100 mM**. Number of final [pi] ~ 0 mM: 3 in 43. Number of final [pi] ~ 0 mM with final [nh4] ~ 0 mM: 3 in 43. 100% of cases with final [pi] ~ 0 mM implied final [nh4] ~ 0 mM (3/3).
+  
+  - **[$NH_{4}$] = 200 mM**. Number of final [pi] > 69.9 mM: 4 in 30. Number of final [pi] > 69.9 mM with final [nh4] ~ 0 mM: 0 in 30. 0% of cases with final [pi] > 69.9 mM implied final [nh4] ~ 0 mM (0/4).
+
+![Final NH4](Report_NutrientLimitations_images/nonSucr/finalNH4_multiplescatter.png){width=50%}
+![Final Pi](Report_NutrientLimitations_images/nonSucr/finalpi_multiplescatter.png){width=50%}
+
+
+## 2.5. Final sucrose concentration {#NLim_M9_nonSucr_finalsucr}
+
+**Final sucrose concentration** ranged from 1000 to 600-550 mM for the first FLYCOP run (18.7 mM [$NH_{4}$]). In the rest of FLYCOP runs, this final concentration ranged from 1000 to 0 mM, with more values of final sucrose in 0 in the last two cases ([$NH_{4}$] = 100, 200 mM): 12 in 43, and 5 in 30 values, respectively. These final 0-sucrose cases happened more frequently for the highest fitness values in both cases.
+
+## 2.6. Death Effect (initial cycle) {#NLim_M9_nonSucr_deathinit}
+
+For those cases where the *death effect* happened within each FLYCOP run, the higher the initial [$NH_{4}$] concentration, the later this effect started (lower limit of the range of values for each FLYCOP run).
+
+  - [$NH_{4}$] = 18.7 mM. Lower limit around cycle 25, main cloud of points between cycles 25 and 50.
+  - [$NH_{4}$] = 50 mM. Lower limit around cycle 40, main cloud of points between cycles 40 and 60-70.
+  - [$NH_{4}$] = 100 mM. Lower limit around cycle 50, main cloud of points between cycles 50 and 100.
+  - [$NH_{4}$] = 200 mM. Lower limit around cycle 60, main cloud of points between cycles 60 to 160 (more dispersed group).
+  
+Moreover, the number of cases **without death effect** for each FLYCOP run was the following.
+
+  - [$NH_{4}$] = 18.7 mM. 2 in 77 (~3%).
+  - [$NH_{4}$] = 50 mM. 3 in 77 (~4%).
+  - [$NH_{4}$] = 100 mM. 11 in 43 (~26%).
+  - [$NH_{4}$] = 200 mM. 10 in 30 (~33%).
+
+As expected, the higher the initial [$NH_{4}$] concentration, the higher the number of configurations without final death effect. Moreover, it is interesting to check what had happened with $NH_{4}$ and $P_{i}$ in those cases with final death effect.
+
+* **[$NH_{4}$] = 18.7 mM**. 
+
+    * The number of cases with death effect was:  75 in 77 (**97%**).
+    * The number of cases with death effect and [nh4] exhaustion was:  75 in 77 (75/75, **100% of cases** with death effect).
+    * The number of cases with death effect and both [nh4] and [pi] exhaustion was:  48 in 77 (48/75, 64% of cases with death effect).
+    
+* **[$NH_{4}$] = 50 mM**.
+
+    * The number of cases with death effect was:  74 in 77 (**96%**).
+    * The number of cases with death effect and [nh4] exhaustion was:  74 in 77 (74/74, **100% of cases** with death effect).
+    * The number of cases with death effect and both [nh4] and [pi] exhaustion was:  62 in 77 (62/74, 84% of cases with death effect).
+    
+* **[$NH_{4}$] = 100 mM**.
+
+    * The number of cases with death effect was:  32 in 43 (**74%**).
+    * The number of cases with death effect and [nh4] exhaustion was:  21 in 43 (21/32, **66% of cases** with death effect).
+    * The number of cases with death effect and both [nh4] and [pi] exhaustion was:  17 in 43 (17/32, 53% of cases with death effect).
+    
+* **[$NH_{4}$] = 200 mM**.
+
+    * The number of cases with death effect was:  20 in 30 (**66%**).
+    * The number of cases with death effect and [nh4] exhaustion was:  10 in 30 (10/20, **50% of cases** with death effect).
+    * The number of cases with death effect and both [nh4] and [pi] exhaustion was:  10 in 20 (50% of cases with death effect). \newline
+    
+The main conclusions in this respect would be: i) the lower the initial [$NH_{4}$] concentration, the higher the final number of configurations with death effect; ii) $NH_{4}$ exhaustion happened in all cases of death effect for the first two FLYCOP runs (lower initial $NH_{4}$ values), and in an important number of cases for the last two FLYCOP runs (higher initial $NH_{4}$ values); iii) in a very notable number of these configurations with death effect and $NH_{4}$ exhaustion, there was also final $P_{i}$ exhaustion.
+
+An unresolved issue, however, would be determining what was the cause for death effect in those configurations where final $NH_{4}$ was not exhausted (i.e. in special, in the last two FLYCOP runs, [$NH_{4}$] = 100, 200 mM). A potential reason to be further checked, nearly exhausted final $NH_{4}$ levels, together with insufficient $P_{i}$ levels.
+    
+
+![Final Sucrose.](Report_NutrientLimitations_images/nonSucr/finalsucr_multiplescatter.png){width=50%}
+![Death Effect](Report_NutrientLimitations_images/nonSucr/DT_cycles_init_multiplescatter.png){width=50%}
+
+## 2.7. Conclusion and Further Implementing {#NLim_M9_nonSucr_conc}
+
+* Regardless of the initial [$NH_{4}$] concentration, the **ratios for the optimal input parameters** (initial biomass, uptake rates) seemed to converge for the different FLYCOP runs. 
+
+  - **Initial Biomass ratio** (*E.coli* / *P.putida*) points clustered between 0.5 to 3.0-4.0.
+  - **Uptakes Rates ratio** (sucrose / fructose) points clustered under 1.0.
+
+* The initial [$NH_{4}$] concentration conditioned the **final biomass concentrations** reached: the higher this initial concentration, the higher the final *E.coli* and *P.putida* biomass. This was an expected effect, since $NH_{4}$ is an essential nutrient for biomass growth.
+
+* **Final naringenin concentration ranges** were similar for the FLYCOP runs with initial [$NH_{4}$] = 50, 100, 200 mM (upper limit higher than 100 mM). At the same time, the upper limit for the first run ([$NH_{4}$] = 18.7 mM) was around 60 mM. In any case, it might not be reasonable achieving a very high final naringenin concentrations (above 30 to 50 mM), so these differences could not be considered significant.
+
+* The same effect was observed for **final pCA concentrations**: a higher upper limit (around 100 mM) for the FLYCOP runs with initial [$NH_{4}$] = 50, 100, 200 mM; than for the first run ([$NH_{4}$] = 18.7 mM), around 60 mM. At the same time, it is worth noticing that the number of cases of final pCA near 0 mM was slightly inferior for the last FLYCOP run ([$NH_{4}$] = 200 mM) than for the first ones.
+
+  This last issue would make sense, since the higher the initial [$NH_{4}$], the higher the final *E.coli* biomass; and thus the higher the final [pCA] which the mentioned microbe can produce.
+
+* As expected for **nitrogen limitations**, the higher the initial [$NH_{4}$], the higher the final [$NH_{4}$] concentration.
+
+* With respect to **final [$P_{i}$] values**, the number of cases with full $P_{i}$ consumption was moderately higher for FLYCOP runs [$NH_{4}$] = 18.7, 50 mM than for [$NH_{4}$] = 100, 200 mM.
+
+  - Moreover, the number of configurations with final [$P_{i}$] near 0, having [$NH_{4}$] ~ 0, did notably decrease as the initial [$NH_{4}$] increased.
+  - At the same time, no configurations with disproportionate final [$P_{i}$] (or higher than initially) were observed for the FLYCOP run [$NH_{4}$] = 200 mM, even though they did happen for the other three runs.
+  
+  Thus there might be an interaction effect, to be further check, between nitrogen exhaustion and $P_{i}$ final levels (more frequently, consumption; in some cases, overproduction).
+  
+* **Sucrose consumption** was more pronounced in those FLYCOP runs with lighter nitrogen limitations ([$NH_{4}$] = 50, 100, 200 mM). It is suspected that those configurations with higher sucrose consumption do have a higher fitness, though this hypothesis should be further evaluated.
+  
+* With respect to the **death effect**, the higher the initial [$NH_{4}$] concentration, the later this phenomenon started. However, there were configurations in every FLYCOP run where it did not happen. Again, the higher the initial [$NH_{4}$] concentration, the higher the number of configurations with no final death effect. \newline
+
+To sum up, this second series of comparative analysis contributed to **further validate the following hypothesis**.
+
+* **Sucrose limitation** would not be the main cause for microbes death. However, under N and /or P limitations, sucrose consumption would be increased.
+
+* **Nitrogen limitation** might be the main cause for microbes death, but there might also be an interaction with **phosphate limitation**, as shown in the data values obtained in the analysis for the death effect (initial cycle).
+  
+
+\newpage
+# 3. Multiple Comparative Analysis for N limitations with M9-medium, without sucrose / $P_{i}$ limitations. {#NLim_M9_nonSucr_nP}
+
+For this third comparative analysis, the FLYCOP runs considered had 1000 mM $P_{i}$ and 1000 mM sucrose as initial concentrations. They just differed on the initial $NH_{4}$ concentration.
+
+- **M9base**: 18.7 mM [$NH_{4}$]. 70 configurations within the SD restriction criterion.
+- **M950N**: 50 mM [$NH_{4}$]. 75 configurations within the SD restriction criterion.
+- **M9100N**: 100 mM [$NH_{4}$]. 48 configurations within the SD restriction criterion.
+- **M9200N**: 200 mM [$NH_{4}$]. 55 configurations within the SD restriction criterion.
+	
+It is worth noticing that the number of final configurations evaluated for the FLYCOP runs *M9base* and *M950N* were moderately more abundant than for *M9100N* and *M9200N*. \newline
+	
+On the other hand, the **dependent variables considered** in this comparative analysis were the following.
+  
+- Uptake Rates ratio (sucrose by *E.coli* / fructose by *P.putida*)
+- Initial Biomass ratio (*E.coli* / *P.putida*)
+- Final Product concentration (p-coumarate, naringenin).
+- Final Biomass concentration (*E.coli*, *P.putida*).
+- Final nutrient concentration ($NH_{4}$, $P_{i}$).
+- Final sucrose concentration.
+- Death Effect (if present): initial cycle where it started.
+- $P_{i}$ Overconsumption Effect (if present): initial cycle where it started and duration. *Overconsumption here considered as* > 10.0 mM $P_{i}$ / cycle. *`r colorize("Pendiente implementar", "red")`*.
+	
+	
+## 3.1. Input Parameters ratios {#NLim_M9_nonSucr_nP_inputpar}
+
+* The ratio for **initial biomass** (*E.coli*/*P.putida*) seemed similar for all four configurations, as shown in the scatterplot on the left. The cloud of points ranged from a lower limit of around 0.5 to an upper limit of 10. However, an important number of the values for the FLYCOP runs were concentrated under the value of 4.0.
+
+* Again, the ratio for **uptake rates** (sucrose / fructose) seemed similar for all four configurations, as shown in the scatterplot on the right. The cloud of points ranged from a lower limit near 0 to an upper limit of 4 to 5. However, most of the values for the FLYCOP runs were concentrated under the value of 1.0.
+
+![Initial Biomass ratio for the FLYCOP runs considered.](Report_NutrientLimitations_images/nonSucr_nP/initBratio_multiplescatter.png){width=50%}
+![Uptake Rates ratio for the FLYCOP runs considered.](Report_NutrientLimitations_images/nonSucr_nP/uptakeRratio_multiplescatter.png){width=50%}
+
+## 3.2. Final Biomass concentration {#NLim_M9_nonSucr_nP_finalb}	
+
+* **Final *E.coli* biomass** tended to be higher, the higher the initial value of [$NH_{4}$]. For initial [$NH_{4}$] = 18.7 mM, the points clustered between 1.0-2.2 gL^-1^; while for initial [$NH_{4}$] = 50 mM, they were concentrated between 2.5-5.0 gL^-1^.  However, in the cases of [$NH_{4}$] = 100, 200 mM, final *E.coli* biomass ranged from lower values around 1.0 to upper values around 8.0 gL^-1^.
+
+* The same effect was observed **for *P.putida KT* biomass**. While for initial [$NH_{4}$] = 18.7 mM, the highest values were around 1.0-1.2 gL^-1^; for initial [$NH_{4}$] = 50 mM, they came up to around 2.0-2.5 gL^-1^. At the same time, final *P.putida* values for [$NH_{4}$] = 100, 200 mM ranged from the same lower value than the two previous FLYCOP runs, to around 5.0-6.0 gL^-1^ as the upper limit.
+
+![Final E.coli biomass.](Report_NutrientLimitations_images/nonSucr_nP/finalEc_multiplescatter.png){width=50%}
+![Final P.putida KT biomass.](Report_NutrientLimitations_images/nonSucr_nP/finalKT_multiplescatter.png){width=50%}
+
+## 3.3. Final Product concentration {#NLim_M9_nonSucr_nP_finalp}
+
+* As for **final naringenin concentration**, in the first FLYCOP run ([$NH_{4}$] = 18.7 mM) the cloud of points clustered between 0 to around 60 mM. At the same time, for runs [$NH_{4}$] = 50, 100 mM; the respective clouds of points ranged from 0 to around 150 mM; with some higher outliers for [$NH_{4}$] = 100 mM. Finally, for the case [$NH_{4}$] = 200 mM, the cloud of points was similar to the two previous ones, but with an upper limit around 180-190 mM, and with a slightly reduced concentration of points in the higher half.
+
+* As for **final pCA concentration**, this value was 0 or near 0 for an important number of configurations in all FLYCOP runs. However, it was slightly lower for the last FLYCOP runs (higher initial [$NH_{4}$]).
+
+  - [$NH_{4}$] = 18.7 mM: 40 in 70 values (57%).
+  - [$NH_{4}$] = 50 mM: 42 in 75 values (56%).
+  - [$NH_{4}$] = 100 mM: 22 in 48 values (46%).
+  - [$NH_{4}$] = 200 mM: 23 in 55 values (42%).
+
+  The rest of the values for each run ranged from 0 to a different upper limit.
+
+  - [$NH_{4}$] = 18.7 mM: upper limit around 50 mM.
+  - [$NH_{4}$] = 50, 100 mM: upper limit around 80-100 mM, with some outliers for each case.
+  - [$NH_{4}$] = 200 mM: upper limit around 160 mM.
+
+![Final naringenin.](Report_NutrientLimitations_images/nonSucr_nP/finalnar_multiplescatter.png){width=50%}
+![Final pCA.](Report_NutrientLimitations_images/nonSucr_nP/finalpca_multiplescatter.png){width=50%}
+
+
+## 3.4. Final Nutrients concentration (N, P) {#NLim_M9_nonSucr_nP_finalnut}
+
+With respect to **final [$NH_{4}$] concentrations**, the distribution of points was as follows.
+
+  - [$NH_{4}$] = 18.7 mM. 69 in 70 values, 0 or near 0 mM. 1 outlier (~175 mM).
+  - [$NH_{4}$] = 50 mM. 74 in 75 values, 0 or near 0 mM. 1 outlier (~175 mM).
+  - [$NH_{4}$] = 100 mM. 32 in 48. The rest of points were distributed between 0 to around 50 mM. 1 outlier (~250 mM).
+  - [$NH_{4}$] = 200 mM. 10 in 55. The rest of points were distributed between 0 to around 150 mM. 1 outlier (~350 mM).
+  
+As seen in these values, the higher the initial [$NH_{4}$] concentration, the lower the final [$NH_{4}$] values = 0 mM. \newline
+  
+With respect to **final $P_{i}$ concentrations**, the values obtained within the different FLYCOP runs were the following ones.
+
+* **Configuration:  18.7 mM [NH4]**:
+
+  - The number of low final [Pi] (under 1 mM) was:  0 in 70 (0%).
+  - The number of low final [Pi] (between 1 to 10 mM) was:  0 in 70.
+  - The number of intermediate final [Pi] (10-55 mM) was:  0 in 70.
+  - The number of final [Pi] near original concentration (55-69.9 mM) was:  0 in 70.
+  - The number of final [Pi] higher than 1000 mM was: 6 in 70 (9%). In **all** of these cases, final [$NH_{4}$] was 0 or nearly 0. \newline
+  
+* **Configuration:  50 mM [NH4]**:
+
+  - The number of low final [Pi] (under 1 mM) was:  0 in 75 (0%).
+  - The number of low final [Pi] (between 1 to 10 mM) was:  0 in 75.
+  - The number of intermediate final [Pi] (10-55 mM) was:  0 in 75.
+  - The number of final [Pi] near original concentration (55-69.9 mM) was:  0 in 75.
+  - The number of final [Pi] higher than 1000 mM was: 6 in 75 (8%). In **all** of these cases, final [$NH_{4}$] was 0 or nearly 0. \newline
+  
+* **Configuration:  100 mM [NH4]**:
+
+  - The number of low final [Pi] (under 1 mM) was:  0 in 48 (0%).
+  - The number of low final [Pi] (between 1 to 10 mM) was:  0 in 48.
+  - The number of intermediate final [Pi] (10-55 mM) was:  0 in 48.
+  - The number of final [Pi] near original concentration (55-69.9 mM) was:  0 in 48.
+  - The number of final [Pi] higher than 1000 mM was: 3 in 48 (6%). In **all** of these cases, final [$NH_{4}$] was 0 or nearly 0. \newline
+
+* **Configuration:  200 mM [NH4]**:
+
+  - The number of low final [Pi] (under 1 mM) was:  0 in 55 (0%).
+  - The number of low final [Pi] (between 1 to 10 mM) was:  0 in 55.
+  - The number of intermediate final [Pi] (10-55 mM) was:  0 in 55.
+  - The number of final [Pi] near original concentration (55-69.9 mM) was:  0 in 55.
+  - The number of final [Pi] higher than 1000 mM was: 3 in 55 (5%). In **none** of these cases, final [$NH_{4}$] was 0 or nearly 0. \newline
+  
+
+In this comparative analysis, since the initial [$P_{i}$] was 1000 mM, there were no final values under 69.9 mM in any FLYCOP run. However, in runs [$NH_{4}$] = 18.7, 50, 100 mM there were a certain number of configurations of $P_{i}$ production, and in all of them $NH_{4}$ had been exhausted. In run [$NH_{4}$] = 200 mM, there were also four cases of $P_{i}$ production, but without $NH_{4}$ being also exhausted.[$NH_{4}$] = 18.7
+
+In general, the range of final $P_{i}$ values for each FLYCOP run was the following one.
+
+  - [$NH_{4}$] = 18.7 mM. From 1000 to 700-750 mM.
+  - [$NH_{4}$] = 50, 100, 200 mM. From 1000 to 500 mM, with some points between 500 and 350 mM for [$NH_{4}$] = 100 mM.
+
+![Final NH4](Report_NutrientLimitations_images/nonSucr_nP/finalNH4_multiplescatter.png){width=50%}
+![Final Pi](Report_NutrientLimitations_images/nonSucr_nP/finalpi_multiplescatter.png){width=50%}
+
+
+## 3.5. Final sucrose concentration {#NLim_M9_nonSucr_nP_finalsucr}
+
+**Final sucrose concentration** ranged from 1000 to 600-550 mM for the first FLYCOP run (18.7 mM [$NH_{4}$]). In the rest of FLYCOP runs, this final concentration ranged from 1000 to 0 mM, with more values of final sucrose in 0 in the last two cases ([$NH_{4}$] = 100, 200 mM): 14 in 48, and 31 in 55 values, respectively.
+
+## 3.6. Death Effect (initial cycle) {#NLim_M9_nonSucr_nP_deathinit}
+
+For those cases where the *death effect* happened within each FLYCOP run, the higher the initial [$NH_{4}$] concentration, the later this effect started (lower limit of the range of values for each FLYCOP run).
+
+  - [$NH_{4}$] = 18.7 mM. Lower limit around cycle 25, main cloud of points between cycles 25 and 50. *Notable number of outliers*.
+  - [$NH_{4}$] = 50 mM. Lower limit around cycle 40, main cloud of points between cycles 40 and 70-80. *Notable number of outliers*.
+  - [$NH_{4}$] = 100 mM. Lower limit around cycle 50, main cloud of points between cycles 50 and 100. *Certain number of outliers*.
+  - [$NH_{4}$] = 200 mM. Lower limit around cycle 60, two groups of points: intervals (60-70) and (140-180). \newline
+  
+Moreover, the number of cases **without death effect** for each FLYCOP run was the following.
+
+  - [$NH_{4}$] = 18.7 mM. 3 in 70 (~4%).
+  - [$NH_{4}$] = 50 mM. 1 in 75 (~1%).
+  - [$NH_{4}$] = 100 mM. 8 in 48 (~17%).
+  - [$NH_{4}$] = 200 mM. 16 in 55 (~29%). \newline
+
+As expected, the higher the initial [$NH_{4}$] concentration, the higher the number of configurations without final death effect. Moreover, it is interesting to check what had happened with $NH_{4}$ and $P_{i}$ in those cases with final death effect.
+
+* **[$NH_{4}$] = 18.7 mM**. 
+
+    * The number of cases with death effect was:  67 in 70 (**96%**).
+    * The number of cases with death effect and [nh4] exhaustion was:  67 in 70 (67/67, **100% of cases** with death effect).
+    * The number of cases with death effect and both [nh4] and [pi] exhaustion was:  0 in 70.
+    
+* **[$NH_{4}$] = 50 mM**.
+
+    * The number of cases with death effect was:  74 in 75 (**99%**).
+    * The number of cases with death effect and [nh4] exhaustion was:  74 in 75 (74/74, **100% of cases** with death effect).
+    * The number of cases with death effect and both [nh4] and [pi] exhaustion was:  0 in 75.
+    
+* **[$NH_{4}$] = 100 mM**.
+
+    * The number of cases with death effect was:  40 in 48 (**83%**).
+    * The number of cases with death effect and [nh4] exhaustion was:  26 in 48 (26/40, **65% of cases** with death effect).
+    * The number of cases with death effect and both [nh4] and [pi] exhaustion was:  0 in 48.
+    
+* **[$NH_{4}$] = 200 mM**.
+
+    * The number of cases with death effect was:  39 in 55 (**71%**).
+    * The number of cases with death effect and [nh4] exhaustion was:  10 in 55 (10/39, **26% of cases** with death effect).
+    * The number of cases with death effect and both [nh4] and [pi] exhaustion was:  0. \newline
+    
+The main conclusions in this respect would be: i) the lower the initial [$NH_{4}$] concentration, the higher the final number of configurations with death effect; ii) $NH_{4}$ exhaustion happened in all cases of death effect for the first two FLYCOP runs (lower initial $NH_{4}$ values), in an important number of cases for the third FLYCOP run, and in a moderate number of cases for the last FLYCOP run (highest initial $NH_{4}$); iii) in this case, $P_{i}$ was never finally exhausted, so there was not possible interaction between $NH_{4}$ and $P_{i}$ limitations.
+
+An unresolved issue, however, would be determining what was the cause for death effect in those configurations where final $NH_{4}$ was not exhausted (i.e. in special, in the last FLYCOP runs, [$NH_{4}$] = 200 mM). A potential reason to be further checked, nearly exhausted or low final $NH_{4}$ levels with unbalanced (available) quantities of $P_{i}$ and/or carbon source.
+
+![Final Sucrose.](Report_NutrientLimitations_images/nonSucr_nP/finalsucr_multiplescatter.png){width=50%}
+![Death Effect.](Report_NutrientLimitations_images/nonSucr_nP/DT_cycles_init_multiplescatter.png){width=50%}
+
+## 3.7. Conclusion and Further Implementing {#NLim_M9_nonSucr_nP_conc}
+
+* Regardless of the initial [$NH_{4}$] concentration, the **ratios for the optimal input parameters** (initial biomass, uptake rates) seemed to converge for the different FLYCOP runs. 
+
+  - **Initial Biomass ratio** (*E.coli* / *P.putida*) points clustered between 0.5 to 3.0-4.0.
+  - **Uptakes Rates ratio** (sucrose / fructose) points clustered under 1.0.
+
+* The initial [$NH_{4}$] concentration conditioned the **final biomass concentrations** reached: the higher this initial concentration, the higher the final *E.coli* and *P.putida* biomass. This was an expected effect, since $NH_{4}$ is an essential nutrient for biomass growth.
+
+* **Final naringenin concentration ranges** were similar for the FLYCOP runs with initial [$NH_{4}$] = 50, 100, 200 mM (upper limit around 150 mM). At the same time, the upper limit for the first run ([$NH_{4}$] = 18.7 mM) was around 60 mM. In any case, it might not be reasonable achieving a very high final naringenin concentrations (above 30 to 50 mM), so these differences could not be considered significant.
+
+* As for **final pCA concentrations**, the higher the initial [$NH_{4}$] concentration, the higher the final value of pCA. The upper limits in the respective clouds of points for the four FLYCOP runs were 60, 120, 120 and 160 mM. However, many of these values could be considered disproportionate above a certain concentration (30 to 50 mM). 
+
+  On the other hand, there were also an important number of points with final pCA near 0 in all FLYCOP runs; interestingly, slightly higher in those runs with lower initial [$NH_{4}$] values. This last issue would make sense, since the higher the initial [$NH_{4}$], the higher the final *E.coli* biomass; and thus the higher the final [pCA] which the mentioned microbe can produce.
+
+* As expected for **nitrogen limitations**, the higher the initial [$NH_{4}$], the higher the final [$NH_{4}$] concentration.
+
+* With respect to **final [$P_{i}$] values**, there were no cases of full $P_{i}$ consumption for any FLYCOP run, since the initial concentration was 1000 mM. However, final $P_{i}$ consumption was around 200-250 for the first FLYCOP run, and around 400-500 mM for the last three FLYCOP runs. These consumption rates seemed disproportionate, as compared with other FLYCOP runs previously executed (not in this report), without nutrient limitations (*further checking required*).
+
+  On the other hand, there were a few cases of $P_{i}$ production with $NH_{4}$ exhausted for the first three FLYCOP runs. For the last run, [$NH_{4}$] = 200 mM, these cases of $P_{i}$ production did not imply $NH_{4}$ exhaustion.
+  
+  Therefore, in the current comparative analysis, the effect of $NH_{4}$ and $P_{i}$ limitations could not further be considered, since $P_{i}$ was never limited.
+  
+* **Sucrose consumption** was more pronounced in those FLYCOP runs with lighter nitrogen limitations ([$NH_{4}$] = 50, 100, 200 mM). It is suspected that those configurations with higher sucrose consumption do have a higher fitness, though this hypothesis should be further evaluated.
+  
+* With respect to the **death effect**, the higher the initial [$NH_{4}$] concentration, the later this phenomenon started. However, there were configurations in every FLYCOP run where it did not happen. Again, the higher the initial [$NH_{4}$] concentration, the higher the number of configurations with no final death effect.
+
+  On the other hand, $NH_{4}$ exhaustion seemed to be the main reason for microbes death. However, in the last two FLYCOP runs (with lighter nitrogen limitations), not in all cases of death effect was $NH_{4}$ finally exhausted. Thus the cause for death might be more complex (than just $NH_{4}$ exhaustion) in these type of configurations. \newline
+
+To sum up, this third series of comparative analysis contributed to **further validate the already commented hypothesis**.
+
+* **Sucrose limitation** would not be the main cause for microbes death. However, under N limitations, sucrose consumption would be increased.
+
+* **Nitrogen limitation** might be the main cause for microbes death, and this phenomenon seems to increase $P_{i}$ consumption.
+
+* In those cases of **microbes death without $NH_{4}$ *complete* final exhaustion**, the reason might be low (but not 0) final $NH_{4}$ levels or, an unbalanced availability of nutrients/ carbon source: excess of sucrose and $P_{i}$, with reduced concentration of $NH_{4}$.
+
+
+\newpage
+# 4. Global Conclusions to the first three Comparative Analysis {#global_conc1}
+
+The first series of sequential analyses here performed involved the next comparisons.
+
+  1. **Multiple Comparative Analysis for N Limitations with M9-medium**. 69.9 mM $P_{i}$, 100 mM sucrose (initial concentrations).
+  
+  2. **Multiple Comparative Analysis for N limitations with M9-medium, without sucrose limitation**. 69.9 mM $P_{i}$, 1000 mM sucrose (initial concentrations).
+  
+  3. **Multiple Comparative Analysis for N limitations with M9-medium, without sucrose / $P_{i}$ limitations**. 1000 mM $P_{i}$, 1000 mM sucrose (initial concentrations). \newline
+
+In these comparisons, the FLYCOP runs considered were the following ones.
+
+- **M9base**: 18.7 mM [$NH_{4}$].
+- **M950N**: 50 mM [$NH_{4}$].
+- **M9100N**: 100 mM [$NH_{4}$].
+- **M9200N**: 200 mM [$NH_{4}$]. *Absent in the first comparative analysis*. \newline
+	
+The **global conclusions inferred** from these analyses are commented next. The idea here is comparing the three comparative analyses between them.
+
+* Regardless of the initial [$NH_{4}$] concentration, the **ratios for the optimal input parameters** (initial biomass, uptake rates) seemed to converge for the different FLYCOP runs in all comparative analyses.
+
+  - **Initial Biomass ratio** (*E.coli* / *P.putida*) points clustered between 0.5 to 3.0-4.0.
+  - **Uptakes Rates ratio** (sucrose / fructose) points clustered under 1.0. \newline
+
+* The initial [$NH_{4}$] concentration conditioned the **final biomass concentrations** reached: the higher this initial concentration, the higher the final *E.coli* and *P.putida* biomass. This was an expected effect, since $NH_{4}$ is an essential nutrient for biomass growth. \newline
+
+* As expected for **nitrogen limitations**, the higher the initial [$NH_{4}$], the higher the final [$NH_{4}$] concentration in all comparative analyses. \newline
+
+* **Final naringenin concentration** would be similar if just those values within reasonable limits are considered, in all comparative analyses. It is true that those FLYCOP runs with initial [$NH_{4}$] = 50, 100, 200 mM presented a higher upper limit for naringenin production (above 100 mM). However, it seemed reasonable to reject this apparent higher (potential) production upper limit, since it might not be feasible *in vivo*. 
+
+  This issue should be further checked, since originally I thought nitrogen limitations might boost naringenin production under certain conditions. \newline
+  
+* **Final pCA concentration** was variable in all comparative analyses, depending on the initial level of $NH_{4}$. In this sense, the higher the initial [$NH_{4}$] concentration, the higher the upper limit for pCA production and the lower the final number of configurations with [pca] ~ 0 mM. This circumstance would make sense, given that final *E.coli* biomass also increased with the rise of initial $NH_{4}$ for FLYCOP runs.
+
+  The interesting issue to be further checked would be the reason why this same effect did not happen to the same extent for *P.putida* and naringenin production. A possibility would be that *P.putida* required less $NH_{4}$ concentration than *E.coli*, but instead it further depended on $P_{i}$ and on fructose (which is the carbon source, produced by *E.coli*, thus a direct dependence with the other microbe in the consortium). Therefore, these dependencies would hinder naringenin production, even under no final $NH_{4}$ exhaustion. \newline
+  
+* From the first two comparative analyses (with $P_{i}$ limitation in 69.9 mM), **an interaction seemed to occur between $NH_{4}$ and $P_{i}$ limitations**: for those FLYCOP runs with lower initial values of $NH_{4}$, the number of cases of final exhaustion of both nutrients was higher. 
+
+  Moreover, in the second comparative analysis, a high proportion of cases of death effect had final exhaustion of both nutrients for the FLYCOP runs with the highest $NH_{4}$ limitation. As for those runs with moderate $NH_{4}$ limitation, a still important number of configurations experienced final exhaustion of both nutrients as well.
+  
+  In turn, for those FLYCOP runs with severe or moderate $NH_{4}$ limitation, some cases of $P_{i}$ production were observed in configurations where $NH_{4}$ was finally exhausted. \newline
+  
+* However, in the **comparative analysis without $P_{i}$ limitation**, the death effect still persisted with a high frequency. In this case, the interaction between both nutrient limitations was not further possible.
+
+  Nevertheless, some configurations in all FLYCOP runs reached **phosphate consumption rates notably high**. Therefore, $P_{i}$ consumption could be boosted by nitrogen limitations under these circumstances.
+  
+  Finally, some cases of $P_{i}$ production were also observed, where $NH_{4}$ had also been finally exhausted (specially for those FLYCOP runs with higher nitrogen limitation). \newline
+  
+* **Sucrose limitation would not have been the cause for microbes death**, as originally thought after the first comparative analysis. However, its consumption would be increased under nitrogen limitation (to a greater extent if nitrogen limitation is not severe but moderate). \newline
+
+* With respect to the **death effect**, the higher the initial [$NH_{4}$] concentration, the later this phenomenon started for all comparative analyses. 
+
+  For the second comparative analysis, **the reason for this death effect would be nitrogen final exhaustion**, since it was present in a very high number of configurations with biomass decrease (higher for those configurations with severe nitrogen limitation). Moreover, in a notable number of cases of death effect, **both $NH_{4}$ and $P_{i}$ were finally exhausted**, thus the potential interaction between both limitations.
+  
+  For the third comparative analysis, **the reason for this death effect would primarily be nitrogen exhaustion**, though it did not always happened for those FLYCOP runs with less restrictive nitrogen limitation, even with death effect present. In this sense, **the unbalance caused by nitrogen limitation against phosphate and carbon source availability** might negatively affect microbes development. 
+  
+* **Number of configurations within SD restriction**.
+
+  - *Multiple Comparative Analysis for N Limitations with M9-medium*. Around 40 to 50.
+  - *Multiple Comparative Analysis for N limitations with M9-medium, without sucrose limitation* Around 75 for [$NH_{4}$] = 18.7, 50 mM; around 30 to 45 for [$NH_{4}$] = 100, 200 mM.
+  - *Multiple Comparative Analysis for N limitations with M9-medium, without sucrose / $P_{i}$ limitations*. Around 70 to 75 for [$NH_{4}$] = 18.7, 50 mM; around 45 to 55 for [$NH_{4}$] = 100, 200 mM. \newline
+  
+To sum up, **global interesting points to keep in mind** from this whole comparative analysis.
+
+* **Sucrose limitation** would not be the main cause for microbes death. However, under moderate N limitations, sucrose consumption would be increased.
+
+* **Nitrogen limitation** might be the main cause for microbes death, and this phenomenon seems to increase $P_{i}$ consumption. However, it cannot always be considered the only reason for biomass loss.
+
+* In those cases of **microbes death without $NH_{4}$ *complete* final exhaustion**, an additional reason might be a nutritional imbalance of nutrients (N, P) and/ or carbon source: i.e., excess of sucrose and $P_{i}$, with reduced concentration of $NH_{4}$.
+  
+
+\newpage
+# 5. Multiple Comparative Analysis for each N-limitation configuration. {#NLim_M9_within}
+
+Finally, for every set of FLYCOP runs of N limitation (M9base, M950N, M9100N, M9200N), a final comparative analysis was performed to further assess the effects of sucrose un-limitation and sucrose+$P_{i}$ un-limitation with respect to the initial case (M9-medium standard). So here, the idea would be comparing the next three base cases **for the same initial [$NH_{4}$] concentration**.
+
+	- M9-medium standard (*M9based*).
+	- M9-medium, without sucrose limitation (1000 mM sucrose) (*nonSucr_lim*).
+	- M9-medium, without sucrose and Pi limitation (1000 mM for both) (*nonSucr_nP_lim*). \newline
+	
+However, since the implementation of new scripts for output analysis occurred in parallel with the execution of FLYCOP runs, **unfortunately not all parameters, utilities and configurations are available for all the four further comparisons here displayed**. Nevertheless, this multiple analysis is still interesting since it might allow for the confirmation of some of the hypothesis already raised.
+
+## 5.1. M9base {#NLim_M9_within_M9base}
+
+The FLYCOP runs here considered had an initial [$NH_{4}$] concentration of 18.7 mM and were the following ones.
+
+* **M9based**. 43 configurations within the SD restriction criterion.
+* **nonSucr_lim**. 77 configurations within the SD restriction criterion.
+* **nonSucr_nP_lim**. 70 configurations within the SD restriction criterion.
+
+The main limitations for this first comparison are commented next.
+
+* The **utility for *microbes death tracking* (initial cycle)** could not be used here for the three FLYCOP runs (standard, no-sucrose limitation, no-sucrose-neither-$P_{i}$ limitation), since it was just available for the last two of them.
+* **Final levels of sucrose** were neither available for the first of these three FLYCOP runs here analyzed.
+
+### 5.1.1. Input Parameters ratios {#NLim_M9_within_M9base_inputpar}
+
+* The ratio for **initial biomass** (*E.coli*/*P.putida*) seemed similar for all three configurations, as shown in the scatterplot on the left. The cloud of points ranged from a lower limit of around 0.5 to an upper limit of 10. However, an important number of the values for the FLYCOP runs were concentrated under the value of 4.0.
+
+* Again, the ratio for **uptake rates** (sucrose / fructose) seemed similar for all three configurations, as shown in the scatterplot on the right. The cloud of points ranged from a lower limit near 0 to an upper limit of 4 to 5. However, most of the values for the FLYCOP runs were concentrated under the value of 1.0.
+
+![Initial Biomass ratio for the FLYCOP runs considered.](Report_NutrientLimitations_images/M9base/initBratio_multiplescatter.png){width=50%}
+![Uptake Rates ratio for the FLYCOP runs considered.](Report_NutrientLimitations_images/M9base/uptakeRratio_multiplescatter.png){width=50%}
+
+### 5.1.2. Final Biomass concentration {#NLim_M9_within_M9base_finalb}	
+
+* **Final *E.coli* biomass** was higher for the FLYCOP runs with no sucrose limitation, and with no sucrose /$P_{i}$ limitation. The cloud of points for the M9based run ranged from 0 to 1.75 gL^-1^, while the cloud of final values for the other two runs ranged from around 1.0 to 2.2 gL^-1^ (approx.).
+
+* Interestingly, **for *P.putida* the effect happened on the contrary**. For the M9based run, the cloud of points ranged from 0 to around 2.0 gL^-1^, while for the runs without sucrose and sucrose/ $P_{i}$ limitations, the main cluster of points ranged from 0 to around 1.0 gL^-1^. 
+
+![Final E.coli biomass.](Report_NutrientLimitations_images/M9base/finalEc_multiplescatter.png){width=50%}
+![Final P.putida KT biomass.](Report_NutrientLimitations_images/M9base/finalKT_multiplescatter.png){width=50%}
+
+### 5.1.3. Final Product concentration {#NLim_M9_within_M9base_finalp}
+
+* **Final naringenin concentration** should be considered essentially similar for the three FLYCOP runs, if reasonable production limits are to be considered. For the runs without sucrose and sucrose/ $P_{i}$ limitations, the upper limit for the cloud of points was slightly higher (60 mM) than for the M9based run (50 mM). There were also some more outliers for this last configuration. 
+
+* As for **final pCA concentration**, this value was 0 or near 0 for a certain number of configurations in all FLYCOP runs. However, it was notably higher for the first FLYCOP runs (sucrose and $P_{i}$ limitations).
+
+  * **M9based**. 35 in 43 (81%).
+  * **nonSucr_lim**. 36 in 77 (47%).
+  * **nonSucr_nP_lim**. 40 in 70 (57%).
+
+  The rest of the values for each run ranged from 0 to a different upper limit.
+
+  * **M9based**. 20 mM.
+  * **nonSucr_lim** and **nonSucr_nP_lim**. 50 mM.
+  
+These distribution of points would indicate that pCA production was higher for those FLYCOP runs without sucrose and sucrose /$P_{i}$ limitations.
+
+![Final naringenin.](Report_NutrientLimitations_images/M9base/finalnar_multiplescatter.png){width=50%}
+![Final pCA.](Report_NutrientLimitations_images/M9base/finalpca_multiplescatter.png){width=50%}
+
+### 5.1.4. Final Nutrients concentration (N, P) {#NLim_M9_within_M9base_finalnut}
+
+With respect to **final [$NH_{4}$] concentrations**, the number of configurations with final levels around zero were the following ones.
+
+  * **M9based**. 31 in 43 (72%). The rest of final [$NH_{4}$] values ranged from 0 to 25 mM (i.e. $NH_{4}$ production because of death of microbes in some cases).
+  * **nonSucr_lim**. 76 in 77 (99%).
+  * **nonSucr_nP_lim**. 69 in 70 (99%).
+  
+As seen in these values, the absence of sucrose and sucrose/ $P_{i}$ limitations increased $NH_{4}$ consumption. \newline
+
+With respect to **final $P_{i}$ concentrations**, the values obtained within the different FLYCOP runs were the following ones.
+
+* **Configuration:  M9based**:
+
+  - The number of low final [Pi] (under 1 mM) was:  32 in 43 (**74%**).
+  - The number of low final [Pi] (between 1 to 10 mM) was:  0 in 43.
+  - The number of intermediate final [Pi] (10-55 mM) was:  2 in 43.
+  - The number of final [Pi] near original concentration (55-69.9 mM) was:  3 in 43.
+  - The number of higher than initial or disproportionate final [Pi] (higher than 69.9 mM) was: 6 in 43 (14%). In **all** of these cases, final [$NH_{4}$] was 0 or nearly 0. 
+  - The number of final [Pi] nearly 0 with final [nh4] nearly 0 was: 21 in 43 (21 in 31 values of $NH_{4}$ final exhaustion, **67%**). \newline
+  
+* **Configuration:  nonSucr_lim**:
+
+  - The number of low final [Pi] (under 1 mM) was:  48 in 77 (**62%**).
+  - The number of low final [Pi] (between 1 to 10 mM) was:  6 in 77.
+  - The number of intermediate final [Pi] (10-55 mM) was:  15 in 77.
+  - The number of final [Pi] near original concentration (55-69.9 mM) was:  3 in 77.
+  - The number of higher than initial or disproportionate final [Pi] (higher than 69.9 mM) was:  5 in 77 (6%). In **all** of these cases, final [$NH_{4}$] was 0 or nearly 0. 
+  - The number of final [Pi] nearly 0 with final [nh4] nearly 0 was:  48 in 77 (48 in 48 values of $NH_{4}$ final exhaustion, **100%**^). \newline.
+  
+* **Configuration:  nonSucr_nP_lim**:
+
+  - The number of low final [Pi] (under 1 mM) was:  0 in 70.
+  - The number of higher than initial or disproportionate final [Pi] (higher than 1000 mM) was:  6 in 70 (9%). In **all** of these cases, final [$NH_{4}$] was 0 or nearly 0. \newline
+
+In general, the range of final $P_{i}$ values for each FLYCOP run was the following one.
+
+  * **M9based**. Most of the values under 70 mM. 6 outliers around 300-400 mM.
+  * **nonSucr_lim**. Most of the values under 70 mM. 6 outliers around 300-400 mM.
+  * **nonSucr_nP_lim**. Most of the values between 700-1000 mM. 6 outliers around 1000-1400 mM.
+
+![Final NH4.](Report_NutrientLimitations_images/M9base/finalNH4_multiplescatter.png){width=50%}
+![Final Pi.](Report_NutrientLimitations_images/M9base/finalpi_multiplescatter.png){width=50%}
+
+### 5.1.5. Conclusion and Further Implementing {#NLim_M9_within_M9base_conc}
+
+* Regardless of the presence or absence of sucrose or sucrose/$P_{i}$ limitations, the **ratios for the optimal input parameters** (initial biomass, uptake rates) seemed to converge for the different FLYCOP runs. 
+
+  - **Initial Biomass ratio** (*E.coli* / *P.putida*) points clustered between 0.5 to 3.0-4.0.
+  - **Uptakes Rates ratio** (sucrose / fructose) points clustered under 1.0.
+  
+* Sucrose or sucrose/$P_{i}$ limitations conditioned the **final biomass concentrations** reached.
+  
+  - For *E.coli*, the growth was favored under no sucrose or sucrose/$P_{i}$ limitations.
+  - However, an apparent inverse effect seemed to happen for *P.putida*: under sucrose/$P_{i}$ limitation, the upper limit for the growth of this microbe was higher. 
+  
+  A potential reason (to be further checked) is that a higher burden on *E.coli* growth might benefit *P.putida* growth, as long as *E.coli* continues to produce a minimum quantity or fructose (*P.putida* carbon source) and there is a certain level of $P_{i}$ in the media.
+
+  Another issue to be considered in this sense is that *P.putida* might not be as dependent as *E.coli* on nitrogen (it might not require the same levels for biomass growth) (...).
+  
+* **Final naringenin concentration ranges** were similar for the FLYCOP runs with and without sucrose and sucrose/ $P_{i}$ limitations, specially if reasonable production levels were to be considered.
+
+* However, **final pCA concentrations** were higher under no sucrose and sucrose/ $P_{i}$ limitations, as it was the case for final *E.coli* biomass.
+
+* With respect to **nitrogen limitations**, the absence of sucrose and sucrose/ $P_{i}$ limitations seemed to increase $NH_{4}$ consumption.
+
+* With respect to **final [$P_{i}$] values**, under $P_{i}$ limitations the consumption of this nutrient could be considered similar for sucrose-limited and unlimited configurations. 
+
+  However, the **number of cases with both $NH_{4}$ and $P_{i}$ final exhaustion** was notably higher under sucrose-unlimited than under sucrose limited conditions.
+
+  Finally, there were **a certain number of configurations with $P_{i}$ production** (with $NH_{4}$ final exhaustion) under sucrose-limited, sucrose-unlimited and sucrose/ $P_{i}$ unlimited conditions.
+
+
+\newpage
+## 5.2. M950N {#NLim_M9_within_M950N}
+
+The FLYCOP runs here considered had an initial [$NH_{4}$] concentration of 50 mM and were the following ones.
+
+* **M950N**. 44 configurations within the SD restriction criterion.
+* **nonSucr_lim**. 77 configurations within the SD restriction criterion.
+* **nonSucr_nP_lim**. 75 configurations within the SD restriction criterion.
+
+The main limitations for this second comparison are commented next.
+
+* **Final levels of sucrose** were not available for the first of these three FLYCOP runs here analyzed.
+
+### 5.2.1. Input Parameters ratios {#NLim_M9_within_M950N_inputpar}
+
+* The ratio for **initial biomass** (*E.coli*/*P.putida*) seemed similar for all three configurations, as shown in the scatterplot on the left. The cloud of points ranged from a lower limit of around 0.5 to an upper limit of 10. However, an important number of the values for the FLYCOP runs were concentrated under the value of 4.0.
+
+* Again, the ratio for **uptake rates** (sucrose / fructose) seemed similar for all three configurations, as shown in the scatterplot on the right. The cloud of points ranged from a lower limit near 0 to an upper limit of 4 to 5. However, most of the values for the FLYCOP runs were concentrated under the value of 1.0.
+
+![Initial Biomass ratio for the FLYCOP runs considered.](Report_NutrientLimitations_images/M950N/initBratio_multiplescatter.png){width=50%}
+![Uptake Rates ratio for the FLYCOP runs considered.](Report_NutrientLimitations_images/M950N/uptakeRratio_multiplescatter.png){width=50%}
+
+### 5.2.2. Final Biomass concentration {#NLim_M9_within_M950N_finalb}	
+
+* **Final *E.coli* biomass** was higher for the FLYCOP runs with no sucrose and no sucrose /$P_{i}$ limitation. The cloud of points for the M9based run ranged from 0 to around 4.0 gL^-1^, but the values were somewhat dispersed and many of them were around or under 1.0 gL^-1^. On the other hand, for the runs with no sucrose and no sucrose /$P_{i}$ limitations, all final biomass values were concentrated between 2.8 to 5.0 gL^-1^. 
+
+* Interestingly, **for *P.putida* the effect happened on the contrary**. For the M9based run, the cloud of points ranged from 0 to around 6.0-7.0 gL^-1^: it was still quite a dispersed cloud of points, but in this case more evenly distributed. On the other hand, for the runs with no sucrose and no sucrose /$P_{i}$ limitation, most of the values (except a few outliers) were concentrated between 0 to 3.0 gL^-1^.
+
+![Final E.coli biomass.](Report_NutrientLimitations_images/M950N/finalEc_multiplescatter.png){width=50%}
+![Final P.putida KT biomass.](Report_NutrientLimitations_images/M950N/finalKT_multiplescatter.png){width=50%}
+
+### 5.2.3. Final Product concentration {#NLim_M9_within_M950N_finalp}
+
+* **Final naringenin concentration** should be considered essentially similar for the three FLYCOP runs, if reasonable production limits are to be considered (30 to 50 mM). For the runs without sucrose and sucrose/ $P_{i}$ limitations, the upper limit for the cloud of points was higher (~140 mM) than for the M9based run (80 mM). However, the outliers for the first run (sucrose and $P_{i}$ limitations) reached higher levels. 
+
+* As for **final pCA concentration**, this value was 0 or near 0 for a certain number of configurations in all FLYCOP runs. However, it was somewhat higher for the first FLYCOP runs (sucrose and $P_{i}$ limitations).
+
+  * **M9based**. 34 in 44 (77%).
+  * **nonSucr_lim**. 44 in 77 (57%).
+  * **nonSucr_nP_lim**. 42 in 75 (56%).
+
+  The rest of the values for each run ranged from 0 to a different upper limit.
+
+  * **M9based**. 30 mM.
+  * **nonSucr_lim** and **nonSucr_nP_lim**. 100 mM.
+  
+These distribution of points would indicate that pCA production was higher for those FLYCOP runs without sucrose and sucrose /$P_{i}$ limitations.
+
+![Final naringenin.](Report_NutrientLimitations_images/M950N/finalnar_multiplescatter.png){width=50%}
+![Final pCA.](Report_NutrientLimitations_images/M950N/finalpca_multiplescatter.png){width=50%}
+
+
+### 5.2.4. Final Nutrients concentration (N, P) {#NLim_M9_within_M950N_finalnut}
+
+With respect to **final [$NH_{4}$] concentrations**, the number of configurations with final levels around zero were the following ones.
+
+  * **M9based**. 22 in 44 (50%). The rest of final [$NH_{4}$] values ranged from 0 to 50 mM (i.e. $NH_{4}$ production because of death of microbes in some cases), with two additional outliers around 170 and 200 mM.
+  * **nonSucr_lim**. 77 in 77 (100%).
+  * **nonSucr_nP_lim**. 74 in 75 (99%).
+  
+As seen in these values, the absence of sucrose and sucrose/ $P_{i}$ limitations increased $NH_{4}$ consumption. \newline
+
+With respect to **final $P_{i}$ concentrations**, the values obtained within the different FLYCOP runs were the following ones.
+
+* **Configuration:  M9based**:
+
+  - The number of low final [Pi] (under 1 mM) was:  26 in 44 (**59%**).
+  - The number of low final [Pi] (between 1 to 10 mM) was:  0 in 44.
+  - The number of intermediate final [Pi] (10-55 mM) was:  4 in 44.
+  - The number of final [Pi] near original concentration (55-69.9 mM) was:  6 in 44.
+  - The number of higher than initial or disproportionate final [Pi] (higher than 69.9 mM) was: 8 in 44 (18%). In **all** of these cases, final [$NH_{4}$] was 0 or nearly 0. 
+  - The number of final [Pi] nearly 0 with final [nh4] nearly 0 was: 10 in 44 (10 in 22 values of $NH_{4}$ final exhaustion, **45%**). \newline
+  
+* **Configuration:  nonSucr_lim**:
+
+  - The number of low final [Pi] (under 1 mM) was:  62 in 77 (**81%**).
+  - The number of low final [Pi] (between 1 to 10 mM) was:  2 in 77.
+  - The number of intermediate final [Pi] (10-55 mM) was:  4 in 77.
+  - The number of final [Pi] near original concentration (55-69.9 mM) was:  3 in 77.
+  - The number of higher than initial or disproportionate final [Pi] (higher than 69.9 mM) was:  6 in 77 (8%). In **all** of these cases, final [$NH_{4}$] was 0 or nearly 0. 
+  - The number of final [Pi] nearly 0 with final [nh4] nearly 0 was:  62 in 77 (62 in 77 values of $NH_{4}$ final exhaustion, **81%**). \newline.
+  
+* **Configuration:  nonSucr_nP_lim**:
+
+  - The number of low final [Pi] (under 1 mM) was:  0 in 75.
+  - The number of higher than initial or disproportionate final [Pi] (higher than 1000 mM) was:  6 in 75 (8%). In **all** of these cases, final [$NH_{4}$] was 0 or nearly 0. \newline
+
+In general, the range of final $P_{i}$ values for each FLYCOP run was the following one.
+
+  * **M9based**. Most of the values under 70 mM. Some outliers around 600-750 mM, a few others around 1100 mM.
+  * **nonSucr_lim**. Most of the values under 70 mM. 6 outliers around 600-750 mM.
+  * **nonSucr_nP_lim**. Most of the values between 500-1000 mM. 6 outliers around 1500 mM.
+
+![Final NH4.](Report_NutrientLimitations_images/M950N/finalNH4_multiplescatter.png){width=50%}
+![Final Pi.](Report_NutrientLimitations_images/M950N/finalpi_multiplescatter.png){width=50%}
+
+### 5.2.5. Death Effect (initial cycle) {#NLim_M9_within_M950N_deatheff}
+
+The *death effect* happened for all three FLYCOP runs considered. The respective clouds of points for every case were similar, within limits of cycles 40 to 80-90. Moreover, the ouliers for each of the runs were also in the same y-axis range, from cycles 140 to 200-210.
+
+The number of cases **with death effect** for each FLYCOP run was the following.
+
+  * **M9based**. 41 in 44 (93%). In these 41 cases, 22/41 (**54%**) had final $NH_{4}$ exhaustion; and 10/41 (**24%**) had both final $NH_{4}$ and $P_{i}$ exhaustion.
+  * **nonSucr_lim**. 74 in 77 (96%). In these 74 cases, 74/74 (**100%**) had final $NH_{4}$ exhaustion; and 62/74 (**84%**) had both final $NH_{4}$ and $P_{i}$ exhaustion.
+  * **nonSucr_nP_lim**. 74 in 75 (99%). In these 74 cases, 74/74 (**100%**) had final $NH_{4}$ exhaustion; and **none** had both final $NH_{4}$ and $P_{i}$ exhaustion (there was no final $P_{i}$ exhaustion).
+
+On the other hand, the number of cases **without death effect** for each FLYCOP run was similar.
+
+  * **M9based**. 3 in 44 (7%). 
+  * **nonSucr_lim**. 3 in 77 (4%).
+  * **nonSucr_nP_lim**. 1 in 75 (1%).
+
+Several points were worth noticing.
+
+- Microbes death happened in nearly all cases for the three FLYCOP runs.
+- Under no sucrose or sucrose/ $P_{i}$ limitations, final $NH_{4}$ exhaustion was higher (it happened for all configurations with death effect in these runs). In this sense, under these circumstances the main cause for death effect would be this $NH_{4}$ exhaustion.
+- Under sucrose and $P_{i}$ limitations (first FLYCOP run), $NH_{4}$ was not always exhausted in those cases with death effect (approx. in half of them). Thus the potential cause for the death effect could not be just nitrogen depletion (others potential reasons to be checked: nearly exhausted or low final $NH_{4}$ levels with unbalanced (available) quantities of $P_{i}$ and/or carbon source). 
+- Phosphate consumption rate was around four times higher under no sucrose limitation (second FLYCOP run) than under sucrose limitation (first FLYCOP run), for these cases with death effect.
+
+![Death Effect.](Report_NutrientLimitations_images/M950N/DT_cycles_init_multiplescatter.png){width=50%}
+
+### 5.2.6. Conclusion and Further Implementing {#NLim_M9_within_M950N_conc}
+
+* Regardless of the presence or absence of sucrose or sucrose/$P_{i}$ limitations, the **ratios for the optimal input parameters** (initial biomass, uptake rates) seemed to converge for the different FLYCOP runs. 
+
+  - **Initial Biomass ratio** (*E.coli* / *P.putida*) points clustered between 0.5 to 3.0-4.0.
+  - **Uptakes Rates ratio** (sucrose / fructose) points clustered under 1.0.
+  
+* Sucrose or sucrose/$P_{i}$ limitations conditioned the **final biomass concentrations** reached.
+  
+  - For *E.coli*, the growth was favored under no sucrose or sucrose/$P_{i}$ limitations.
+  - However, an apparent inverse effect seemed to happen for *P.putida*: under sucrose/$P_{i}$ limitation, the upper limit for the growth of this microbe was higher. 
+  
+  A potential reason (to be further checked) is that a higher burden on *E.coli* growth might benefit *P.putida* growth, as long as *E.coli* continues to produce a minimum quantity or fructose (*P.putida* carbon source) and there is a certain level of $P_{i}$ in the media.
+
+  Another issue to be considered in this sense is that *P.putida* might not be as dependent as *E.coli* on nitrogen (it might not require the same levels for biomass growth) (...).
+  
+* **Final naringenin concentration ranges** were similar for the FLYCOP runs with and without sucrose and sucrose/ $P_{i}$ limitations, specially if reasonable production levels were to be considered.
+
+* However, **final pCA concentrations** were higher under no sucrose and sucrose/ $P_{i}$ limitations, as it was the case for final *E.coli* biomass.
+
+* With respect to **nitrogen limitations**, the absence of sucrose and sucrose/ $P_{i}$ limitations seemed to increase $NH_{4}$ consumption.
+
+* With respect to **final [$P_{i}$] values**, under $P_{i}$ limitations the complete consumption of this nutrient was moderately lower under sucrose-limited conditions (59%) *vs*. sucrose unlimited conditions (81%).
+
+  Moreover, the **number of configurations with both $NH_{4}$ and $P_{i}$ final exhaustion** was notably higher under sucrose-unlimited (81%) than under sucrose limited conditions (45%).
+
+  Finally, there were **a certain number of configurations with $P_{i}$ production** (with $NH_{4}$ final exhaustion) under sucrose-limited (18%), sucrose-unlimited (8%) and sucrose/ $P_{i}$ unlimited conditions (8%).
+  
+* In this case, biomass loss was also analyzed: **death effect happened in nearly all configurations** for all the three FLYCOP runs. In this sense, **under no sucrose or sucrose/ $P_{i}$ limitations**, $NH_{4}$ was always finally exhausted, with $P_{i}$ also exhausted under $P_{i}$ limiting conditions in 84% of the cases.
+
+  However, **under sucrose/ $P_{i}$ limiting conditions**, $NH_{4}$ was finally exhausted in just half (54%) the configurations with death effect; with $P_{i}$ exhausted in 24% of these cases with microbes death.
+  
+  Thus **$NH_{4}$ exhaustion would be the cause for biomass loss** under sucrose-unlimited and sucrose/ $P_{i}$ unlimited conditions; and under sucrose and $P_{i}$ limitations, **a nutrient unbalance** might have to be considered and further checked.
+  
+  In turn, **phosphate consumption** would be promoted by sucrose (carbon source) availability.
+
+
+\newpage
+## 5.3. M9100N {#NLim_M9_within_M9100N}
+
+The FLYCOP runs here considered had an initial [$NH_{4}$] concentration of 50 mM and were the following ones.
+
+* **M9100N**. 42 configurations within the SD restriction criterion.
+* **nonSucr_lim**. 43 configurations within the SD restriction criterion.
+* **nonSucr_nP_lim**. 48 configurations within the SD restriction criterion.
+
+The main limitations for this third comparison are commented next.
+
+* **Final levels of sucrose** were not available for the first of these three FLYCOP runs here analyzed.
+
+### 5.3.1. Input Parameters ratios {#NLim_M9_within_M9100N_inputpar}
+
+* The ratio for **initial biomass** (*E.coli*/*P.putida*) seemed similar for all three configurations, as shown in the scatterplot on the left. The cloud of points ranged from a lower limit of around 0.5 to an upper limit of 10. However, an important number of the values for the FLYCOP runs were concentrated under the value of 4.0.
+
+* Again, the ratio for **uptake rates** (sucrose / fructose) seemed similar for all three configurations, as shown in the scatterplot on the right. The cloud of points ranged from a lower limit near 0 to an upper limit of 4. However, most of the values for the FLYCOP runs were concentrated under the value of 1.0.
+
+![Initial Biomass ratio for the FLYCOP runs considered.](Report_NutrientLimitations_images/M9100N/initBratio_multiplescatter.png){width=50%}
+![Uptake Rates ratio for the FLYCOP runs considered.](Report_NutrientLimitations_images/M9100N/uptakeRratio_multiplescatter.png){width=50%}
+
+### 5.3.2. Final Biomass concentration {#NLim_M9_within_M9100N_finalb}	
+
+* **Final *E.coli* biomass** was higher for the FLYCOP runs with no sucrose and no sucrose /$P_{i}$ limitation. The cloud of points for the M9based run ranged from 0 to around 6.0 gL^-1^, but the values were somewhat dispersed and many of them were under 1.0 gL^-1^. On the other hand, for the runs with no sucrose and no sucrose /$P_{i}$ limitations, all final biomass values were distributed between 1.8 to 8.0 gL^-1^, with a higher concentration of points between 4.5 to 8.0 gL^-1^.
+
+* Interestingly, **for *P.putida* the same effect was not observed**: in this case, final biomass for this microbe was equivalent for the three FLYCOP runs and ranged from around 0 to 5.0 gL^-1^. However, it is true that, for the configuration with the sucrose and $P_{i}$ limitation, there were some values around 0 gL^-1^, an event that did not happen for the other two FLYCOP runs. Moreover, the points in this first FLYCOP run were more dispersed.
+
+![Final E.coli biomass.](Report_NutrientLimitations_images/M9100N/finalEc_multiplescatter.png){width=50%}
+![Final P.putida KT biomass.](Report_NutrientLimitations_images/M9100N/finalKT_multiplescatter.png){width=50%}
+
+### 5.3.3. Final Product concentration {#NLim_M9_within_M9100N_finalp}
+
+* **Final naringenin concentration** should be considered essentially similar for the three FLYCOP runs, if reasonable production limits are to be considered (30 to 50 mM). For the runs without sucrose and sucrose/ $P_{i}$ limitations, the upper limit for the cloud of points was higher (~150 mM) than for the M9based run (60 mM). There were a few outliers for the three FLYCOP runs, between 150 and 210 mM. 
+
+* As for **final pCA concentration**, this value was 0 or near 0 for a certain number of configurations in all FLYCOP runs. However, it was somewhat higher for the first FLYCOP runs (sucrose and $P_{i}$ limitations).
+
+  * **M9based**. 32 in 42 (76%).
+  * **nonSucr_lim**. 21 in 43 (49%).
+  * **nonSucr_nP_lim**. 22 in 48 (46%).
+
+  The rest of the values for each run ranged from 0 to a different upper limit.
+
+  * **M9based**. 40 mM.
+  * **nonSucr_lim** and **nonSucr_nP_lim**. 80 mM. Some outliers for the second and third FLYCOP runs, higher for the third one.
+  
+These distribution of points would indicate that pCA production was higher for those FLYCOP runs without sucrose and sucrose /$P_{i}$ limitations.
+
+![Final naringenin.](Report_NutrientLimitations_images/M9100N/finalnar_multiplescatter.png){width=50%}
+![Final pCA.](Report_NutrientLimitations_images/M9100N/finalpca_multiplescatter.png){width=50%}
+
+### 5.3.4. Final Nutrients concentration (N, P) {#NLim_M9_within_M9100N_finalnut}
+
+With respect to **final [$NH_{4}$] concentrations**, the number of configurations with final levels around 0 mM were the following ones.
+
+  * **M9based**. 9 in 42 (21%). As for the rest of final [$NH_{4}$] values, there were some between 0 to 10 mM, and another cloud of points between 50 to 100 mM. 1 outlier around 250 mM.
+  * **nonSucr_lim**. 26 in 43 (60%). The rest of the points were between 0 to 60 mM.
+  * **nonSucr_nP_lim**. 32 in 48 (66%). The rest of the points were between 0 to 60 mM.
+  
+As seen in these values, the absence of sucrose and sucrose/ $P_{i}$ limitations increased $NH_{4}$ consumption. \newline
+
+With respect to **final $P_{i}$ concentrations**, the values obtained within the different FLYCOP runs were the following ones.
+
+* **Configuration:  M9based**:
+
+  - The number of low final [Pi] (under 1 mM) was:  27 in 42 (**64%**).
+  - The number of low final [Pi] (between 1 to 10 mM) was:  2 in 42.
+  - The number of intermediate final [Pi] (10-55 mM) was:  2 in 42.
+  - The number of final [Pi] near original concentration (55-69.9 mM) was:  9 in 42.
+  - The number of higher than initial or disproportionate final [Pi] (higher than 69.9 mM) was: 2 in 42 (5%). In **all** of these cases, final [$NH_{4}$] was 0 or nearly 0. 
+  - The number of final [Pi] nearly 0 with final [nh4] nearly 0 was: 3 in 42 (3 in 9 values of $NH_{4}$ final exhaustion, **33%**). \newline
+  
+* **Configuration:  nonSucr_lim**:
+
+  - The number of low final [Pi] (under 1 mM) was:  20 in 43 (**47%**).
+  - The number of low final [Pi] (between 1 to 10 mM) was:  9 in 43.
+  - The number of intermediate final [Pi] (10-55 mM) was:  2 in 43.
+  - The number of final [Pi] near original concentration (55-69.9 mM) was:  9 in 43.
+  - The number of higher than initial or disproportionate final [Pi] (higher than 69.9 mM) was:  3 in 43 (7%). In **all** of these cases, final [$NH_{4}$] was 0 or nearly 0. 
+  - The number of final [Pi] nearly 0 with final [nh4] nearly 0 was:  17 in 43 (17 in 26 values of $NH_{4}$ final exhaustion, **65%**). \newline.
+  
+* **Configuration:  nonSucr_nP_lim**:
+
+  - The number of low final [Pi] (under 1 mM) was:  0 in 48.
+  - The number of higher than initial or disproportionate final [Pi] (higher than 1000 mM) was:  3 in 48 (6%). In **all** of these cases, final [$NH_{4}$] was 0 or nearly 0. \newline
+
+In general, the range of final $P_{i}$ values for each FLYCOP run was the following one.
+
+  * **M9based**. Most of the values under 70 mM. Two outliers around 600-800 mM.
+  * **nonSucr_lim**. Most of the values under 70 mM. Three outliers around 700 mM.
+  * **nonSucr_nP_lim**. Most of the values between 300-1000 mM, a somewhat dispersed cloud of points. 2 outliers around 1600 mM.
+
+![Final NH4.](Report_NutrientLimitations_images/M9100N/finalNH4_multiplescatter.png){width=50%}
+![Final Pi.](Report_NutrientLimitations_images/M9100N/finalpi_multiplescatter.png){width=50%}
+
+### 5.3.5. Death Effect (initial cycle) {#NLim_M9_within_M9100N_deatheff}
+
+The *death effect* happened for all three FLYCOP runs considered. The respective clouds of points for every case were similar, within limits of cycles 50 to 120. Moreover, the outliers for each of the runs were also in the same y-axis range, from cycles 180 to 220.
+
+The number of cases **with death effect** for each FLYCOP run was the following.
+
+  * **M9based**. 34 in 42 (81%). In these 34 cases, 5/34 (**15%**) had final $NH_{4}$ exhaustion; and 3/34 (**8%**) had both final $NH_{4}$ and $P_{i}$ exhaustion.
+  * **nonSucr_lim**. 32 in 43 (74%). In these 32 cases, 21/32 (**66%**) had final $NH_{4}$ exhaustion; and 17/32 (**53%**) had both final $NH_{4}$ and $P_{i}$ exhaustion.
+  * **nonSucr_nP_lim**. 40 in 48 (83%). In these 40 cases, 26/40 (**65%**) had final $NH_{4}$ exhaustion; and **none** had both final $NH_{4}$ and $P_{i}$ exhaustion (there was no final $P_{i}$ exhaustion).
+
+On the other hand, the number of cases **without death effect** for each FLYCOP run was the next one.
+
+  * **M9based**. 8 in 42 (19%). 
+  * **nonSucr_lim**. 11 in 43 (26%).
+  * **nonSucr_nP_lim**. 8 in 48 (17%).
+  
+Several points were worth noticing.
+
+- Microbes death happened with a very important frequency for the three FLYCOP runs.
+- Under no sucrose or sucrose/ $P_{i}$ limitations, final $NH_{4}$ exhaustion was higher (it happened for more than half the configurations with death effect in these runs). In this sense, under these circumstances the main cause for death effect would be this $NH_{4}$ exhaustion.
+- Under sucrose and $P_{i}$ limitations (first FLYCOP run), just a reduced percentage of the cases with death effect had $NH_{4}$ finally exhausted. Thus the potential cause for the death effect could not be (just) nitrogen depletion (others potential reasons to be checked: nearly exhausted or low final $NH_{4}$ levels with unbalanced (available) quantities of $P_{i}$ and/or carbon source). 
+- Phosphate consumption rate was much higher under no sucrose limitation (second FLYCOP run) than under sucrose limitation (first FLYCOP run), for these cases with death effect. 
+
+![Death Effect.](Report_NutrientLimitations_images/M9100N/DT_cycles_init_multiplescatter.png){width=50%}
+
+### 5.3.6. Conclusion and Further Implementing {#NLim_M9_within_M9100N_conc}
+
+* Regardless of the presence or absence of sucrose or sucrose/$P_{i}$ limitations, the **ratios for the optimal input parameters** (initial biomass, uptake rates) seemed to converge for the different FLYCOP runs. 
+
+  - **Initial Biomass ratio** (*E.coli* / *P.putida*) points clustered between 0.5 to 3.0-4.0.
+  - **Uptakes Rates ratio** (sucrose / fructose) points clustered under 1.0.
+  
+* Sucrose or sucrose/$P_{i}$ limitations conditioned the **final biomass concentrations** reached.
+  
+  - For *E.coli*, the growth was favored under no sucrose or sucrose/$P_{i}$ limitations.
+  - However, this effect was attenuated for *P.putida*: the final biomass values distribution was somewhat comparable between the different conditions; but under sucrose/$P_{i}$ limitations, there were more values of final biomass near 0 gL^-1^.
+  
+  A related issue (to be further checked) is that a higher burden on *E.coli* growth might benefit *P.putida* growth, as long as *E.coli* continues to produce a minimum quantity or fructose (*P.putida* carbon source) and there is a certain level of $P_{i}$ in the media.
+
+  Another issue to be considered in this sense is that *P.putida* might not be as dependent as *E.coli* on nitrogen (it might not require the same levels for biomass growth) (...).
+  
+* **Final naringenin concentration ranges** were similar for the FLYCOP runs with and without sucrose and sucrose/ $P_{i}$ limitations, if reasonable production levels were to be considered. Otherwise, the production reached much higher levels under no sucrose or sucrose/$P_{i}$ limitations, even above 100 mM.
+
+* However, **final pCA concentrations** were higher under no sucrose and sucrose/ $P_{i}$ limitations, in accordance with the better development of *E.coli* biomass for these FLYCOP runs.
+
+* With respect to **nitrogen limitations**, the absence of sucrose and sucrose/ $P_{i}$ limitations seemed to increase $NH_{4}$ consumption.
+
+* With respect to **final [$P_{i}$] values**, under $P_{i}$ limitations the complete consumption of this nutrient was moderately higher under sucrose-limited conditions (64%) *vs*. sucrose unlimited conditions (47%).
+
+  On the other hand, the **number of configurations with both $NH_{4}$ and $P_{i}$ final exhaustion** was notably higher under sucrose-unlimited (65%) than under sucrose limited conditions (33%).
+
+  Finally, there were **a certain number of configurations with $P_{i}$ production** (with $NH_{4}$ final exhaustion) under sucrose-limited (5%), sucrose-unlimited (7%) and sucrose/ $P_{i}$ unlimited conditions (6%).
+  
+* In this case, biomass loss was also analyzed: **death effect happened in many configurations (around 75-80%)** for all the three FLYCOP runs. In this sense, **under no sucrose or sucrose/ $P_{i}$ limitations**, $NH_{4}$ was finally exhausted in an important number of cases (65%), with $P_{i}$ also exhausted under $P_{i}$ limiting conditions in 53% of the cases.
+
+  However, **under sucrose/ $P_{i}$ limiting conditions**, $NH_{4}$ was finally exhausted in just 15% of the configurations with death effect; with $P_{i}$ exhausted in 8% of these cases with microbes death.
+  
+  Thus **$NH_{4}$ exhaustion would be the cause for biomass loss under sucrose-unlimited and sucrose/ $P_{i}$ unlimited conditions**, with some additional component of nutrient unbalance; and under sucrose and $P_{i}$ limitations, **a nutrient unbalance** would probably be the main death hypothesis to be further checked.
+  
+  In turn, **phosphate consumption** would be promoted by sucrose (carbon source) availability.
+
+
+\newpage
+## 5.4. M9200N {#NLim_M9_within_M9200N}
+
+The FLYCOP runs here considered had an initial [$NH_{4}$] concentration of 200 mM and were the following ones.
+
+* **M9200N**. 49 configurations within the SD restriction criterion.
+* **nonSucr_lim**. 30 configurations within the SD restriction criterion.
+* **nonSucr_nP_lim**. 55 configurations within the SD restriction criterion.
+
+No limitations for this fourth comparison.
+
+### 5.4.1. Input Parameters ratios {#NLim_M9_within_M9200N_inputpar}
+
+* The ratio for **initial biomass** (*E.coli*/*P.putida*) seemed similar for all three configurations, as shown in the scatterplot on the left. The cloud of points ranged from a lower limit of around 0.5 to an upper limit of 10. However, an important number of the values for the FLYCOP runs were concentrated under the value of 4.0.
+
+* Again, the ratio for **uptake rates** (sucrose / fructose) seemed similar for all three configurations, as shown in the scatterplot on the right. The cloud of points ranged from a lower limit near 0 to an upper limit of 5. However, most of the values for the FLYCOP runs were concentrated under the value of 1.0.
+
+![Initial Biomass ratio for the FLYCOP runs considered.](Report_NutrientLimitations_images/M9200N/initBratio_multiplescatter.png){width=50%}
+![Uptake Rates ratio for the FLYCOP runs considered.](Report_NutrientLimitations_images/M9200N/uptakeRratio_multiplescatter.png){width=50%}
+
+### 5.4.2. Final Biomass concentration {#NLim_M9_within_M9200N_finalb}	
+
+* **Final *E.coli* biomass** was higher for the FLYCOP runs with no sucrose and no sucrose /$P_{i}$ limitation. The cloud of points for the M9based run ranged from 0 to around 6.0 gL^-1^, but the values were somewhat dispersed and many of them were under 1.0 gL^-1^. On the other hand, for the runs with no sucrose and no sucrose /$P_{i}$ limitations, all final biomass values were distributed between 1.8 to 8.0 gL^-1^, with a higher concentration of points between 4.0 to 8.0 gL^-1^ for the second FLYCOP run, and with an even distribution of points (2.0 to 8.0 gL^-1^) for the third FLYCOP run.
+
+* Interestingly, **for *P.putida* the same effect was not observed**: in this case, final biomass for this microbe was equivalent for the three FLYCOP runs and ranged from around 0 to 8.0 gL^-1^. However, the points in this first FLYCOP run were more dispersed and the outliers reached higher levels (from 6.0 to 8.0 gL^-1^, 10 points).
+
+![Final E.coli biomass.](Report_NutrientLimitations_images/M9200N/finalEc_multiplescatter.png){width=50%}
+![Final P.putida KT biomass.](Report_NutrientLimitations_images/M9200N/finalKT_multiplescatter.png){width=50%}
+
+
+### 5.4.3. Final Product concentration {#NLim_M9_within_M9200N_finalp}
+
+* **Final naringenin concentration** should be considered essentially similar for the three FLYCOP runs, if reasonable production limits are to be considered (30 to 50 mM). For the runs with sucrose and $P_{i}$ limitations (first run) and with no-sucrose limitations (second run), the upper limit for the cloud of points was around 75 mM. However, for the sucrose and $P_{i}$ unlimiting conditions (third run), the upper limit was much higher, around 200 mM (even distribution of points).
+
+* As for **final pCA concentration**, this value was 0 or near 0 for a certain number of configurations in all FLYCOP runs, approximately equivalent in all of them.
+
+  * **M9based**. 24 in 49 (49%).
+  * **nonSucr_lim**. 9 in 30 (30%).
+  * **nonSucr_nP_lim**. 23 in 55 (42%).
+
+  The rest of the values for each run ranged from 0 to a different upper limit.
+
+  * **M9based**. 40 mM.
+  * **nonSucr_lim**. 100 mM. Some outliers around 140-160 mM.
+  * **nonSucr_nP_lim**. 160 mM.
+  
+These distribution of points would indicate that pCA production was higher for those FLYCOP runs without sucrose and sucrose /$P_{i}$ limitations.
+
+![Final naringenin.](Report_NutrientLimitations_images/M9200N/finalnar_multiplescatter.png){width=50%}
+![Final pCA.](Report_NutrientLimitations_images/M9200N/finalpca_multiplescatter.png){width=50%}
+
+### 5.4.4. Final Nutrients concentration (N, P) {#NLim_M9_within_M9200N_finalnut}
+
+With respect to **final [$NH_{4}$] concentrations**, the number of configurations with final levels around 0 mM were the following ones.
+
+  * **M9based**. 0 in 49 (0%). As for the rest of final [$NH_{4}$] values, they were essentially concentrated between 90 to 180 mM. Two outliers around 260 and 360 mM.
+  * **nonSucr_lim**. 10 in 30 (33%). The rest of the points were clustered in two groups, one 0-50 mM and the other one 90-150 mM.
+  * **nonSucr_nP_lim**. 10 in 55 (18%). The rest of the points were between 0 to 150 mM.
+  
+As seen in these values, the absence of sucrose and sucrose/ $P_{i}$ limitations increased $NH_{4}$ consumption. \newline
+
+With respect to **final $P_{i}$ concentrations**, the values obtained within the different FLYCOP runs were the following ones.
+
+* **Configuration:  M9based**:
+
+  - The number of low final [Pi] (under 1 mM) was:  18 in 49 (**37%**).
+  - The number of low final [Pi] (between 1 to 10 mM) was:  0 in 49.
+  - The number of intermediate final [Pi] (10-55 mM) was:  5 in 49.
+  - The number of final [Pi] near original concentration (55-69.9 mM) was:  21 in 49.
+  - The number of higher than initial or disproportionate final [Pi] (higher than 69.9 mM) was: 5 in 49 (10%). In **none** of these cases, final [$NH_{4}$] was 0 or nearly 0. 
+  - The number of final [Pi] nearly 0 with final [nh4] nearly 0 was: 0 in 49 (0 in 0 values of $NH_{4}$ final exhaustion, **0%**). \newline
+  
+* **Configuration:  nonSucr_lim**:
+
+  - The number of low final [Pi] (under 1 mM) was:  16 in 30 (**53%**).
+  - The number of low final [Pi] (between 1 to 10 mM) was:  4 in 30.
+  - The number of intermediate final [Pi] (10-55 mM) was:  1 in 30.
+  - The number of final [Pi] near original concentration (55-69.9 mM) was:  5 in 30.
+  - The number of higher than initial or disproportionate final [Pi] (higher than 69.9 mM) was:  4 in 30 (13%). In **none** of these cases, final [$NH_{4}$] was 0 or nearly 0. 
+  - The number of final [Pi] nearly 0 with final [nh4] nearly 0 was:  10 in 30 (10 in 10 values of $NH_{4}$ final exhaustion, **100%**). \newline.
+  
+* **Configuration:  nonSucr_nP_lim**:
+
+  - The number of low final [Pi] (under 1 mM) was:  0 in 55.
+  - The number of higher than initial or disproportionate final [Pi] (higher than 1000 mM) was:  3 in 55 (5%). In **none** of these cases, final [$NH_{4}$] was 0 or nearly 0. \newline
+  
+In general, the range of final $P_{i}$ values for each FLYCOP run was the following one.
+
+  * **M9based**. Most of the values under 70 mM. Three outliers around 550-650 mM.
+  * **nonSucr_lim**. Most of the values under 70 mM. Two outliers around 600 mM.
+  * **nonSucr_nP_lim**. Most of the values between 550-1000 mM. 3 outliers around 1500-1600 mM.
+
+![Final NH4.](Report_NutrientLimitations_images/M9200N/finalNH4_multiplescatter.png){width=50%}
+![Final Pi.](Report_NutrientLimitations_images/M9200N/finalpi_multiplescatter.png){width=50%}
+
+### 5.4.5. Death Effect (initial cycle) {#NLim_M9_within_M9200N_deatheff}
+
+The *death effect* happened for all three FLYCOP runs considered. For the first FLYCOP run, the cloud of points was mostly concentrated between cycles 50 to 80, with some outliers around cycle 130, and around cycle 210. In turn, for the second and third FLYCOP runs (no sucrose and no sucrose / $P_{i}$ limiting conditions), these points ranged from cycles 60 to 180.
+
+The number of cases **with death effect** for each FLYCOP run was the following.
+
+  * **M9based**. 34 in 49 (69%). **None** of these 34 cases had final $NH_{4}$ exhaustion, nor both final $NH_{4}$ and $P_{i}$ exhaustion.
+  * **nonSucr_lim**. 20 in 30 (66%). In these 20 cases, 10/20 (**50%**) had final $NH_{4}$ exhaustion; and 10/20 (**50%**) had both final $NH_{4}$ and $P_{i}$ exhaustion (same 10 cases).
+  * **nonSucr_nP_lim**. 39 in 55 (71%). In these 39 cases, 10/39 (**26%**) had final $NH_{4}$ exhaustion; and **none** had both final $NH_{4}$ and $P_{i}$ exhaustion (there was no final $P_{i}$ exhaustion). \newline
+
+On the other hand, the number of cases **without death effect** for each FLYCOP run was the next one.
+
+* **M9based**. 15 in 49 (31%).  
+* **nonSucr_lim**. 10 in 30 (33%).
+* **nonSucr_nP_lim**. 16 in 55 (29%). \newline
+  
+  
+Several points were worth noticing.
+
+- **Microbes death** happened with a very important frequency for the three FLYCOP runs.
+
+- Curiously, **final $NH_{4}$ exhaustion did not happen for all FLYCOP runs to the same extent**.
+  * For the first run (sucrose and $P_{i}$ limitations), in no case of death effect there was final $NH_{4}$ exhaustion.
+  * For the second run (sucrose un-limiting conditions), in half of those cases with death effect there was final $NH_{4}$ exhaustion. All of these cases of final $NH_{4}$ exhaustion also entailed $P_{i}$ exhaustion.
+  * For the third run (sucrose and $P_{i}$ un-limiting conditions), in a quarter of those cases with death effect there was final $NH_{4}$ exhaustion.
+  
+  Therefore, **biomass loss would be due to nitrogen limitations, but this could not be the only cause**, since $NH_{4}$ is not always exhausted (in particular, in the first and last FLYCOP runs). Others potential reasons should be checked, like nearly exhausted or low final $NH_{4}$ levels, and/ or unbalanced (available) quantities of $P_{i}$ and/or carbon source.
+
+- **Phosphate consumption rate was much higher under no sucrose limitation** (second FLYCOP run) than under sucrose limitation (first FLYCOP run), for these cases with death effect. 
+
+
+### 5.4.6. Final sucrose concentration {#NLim_M9_within_M9200N_finalsucr}
+
+Firstly, the number of cases **with final sucrose exhaustion** for each FLYCOP run was the next one.
+
+  * **M9based**. 36 in 49 (73%).  
+  * **nonSucr_lim**. 5 in 30 (17%).
+  * **nonSucr_nP_lim**. 31 in 55 (56%).
+  
+For the first FLYCOP run (sucrose-limited), final carbon source values were between 25 to 75 mM (approx., variable). For the second and third FLYCOP runs (sucrose and sucrose/ $P_{i}$ unlimited), the points ranged from 950 to 100 mM (second run) or to 25-50 mM (third run).
+
+Nitrogen limitations seemed to boost sucrose (carbon source) consumption under its media availability.
+
+
+![Death Effect.](Report_NutrientLimitations_images/M9200N/DT_cycles_init_multiplescatter.png){width=50%}
+![Final sucrose](Report_NutrientLimitations_images/M9200N/finalsucr_multiplescatter.png){width=50%}
+
+### 5.4.7. Conclusion and Further Implementing {#NLim_M9_within_M9200N_conc}
+
+* Regardless of the presence or absence of sucrose or sucrose/$P_{i}$ limitations, the **ratios for the optimal input parameters** (initial biomass, uptake rates) seemed to converge for the different FLYCOP runs. 
+
+  - **Initial Biomass ratio** (*E.coli* / *P.putida*) points clustered between 0.5 to 3.0-4.0.
+  - **Uptakes Rates ratio** (sucrose / fructose) points clustered under 1.0.
+  
+* Sucrose or sucrose/$P_{i}$ limitations conditioned the **final biomass concentrations** reached.
+  
+  - For *E.coli*, the growth was slightly favored under no sucrose or sucrose/$P_{i}$ limitations.
+  - However, this effect was attenuated for *P.putida*: the final biomass values distribution was somewhat comparable between the different conditions; but under sucrose/$P_{i}$ limitations, the range of values was wider (up to 8.0 gL^-1^).
+  
+  A related issue (to be further checked) is that a higher burden on *E.coli* growth might benefit *P.putida* growth, as long as *E.coli* continues to produce a minimum quantity or fructose (*P.putida* carbon source) and there is a certain level of $P_{i}$ in the media.
+
+  Another issue to be considered in this sense is that *P.putida* might not be as dependent as *E.coli* on nitrogen (it might not require the same levels for biomass growth) (...).
+  
+* **Final naringenin concentration ranges** were similar for the FLYCOP runs with and without sucrose and sucrose/ $P_{i}$ limitations, if reasonable production levels were to be considered. Otherwise, the production reached higher levels under no sucrose/$P_{i}$ limitations, with an even distribution of points throughout all the range of values.
+
+* However, **final pCA concentrations** were higher under no sucrose and sucrose/ $P_{i}$ limitations, in accordance with the better development of *E.coli* biomass for these FLYCOP runs.
+
+* With respect to **nitrogen limitations**, the absence of sucrose and sucrose/ $P_{i}$ limitations seemed to increase $NH_{4}$ consumption.
+
+* With respect to **final [$P_{i}$] values**, under $P_{i}$ limitations the complete consumption of this nutrient was moderately higher under sucrose-unlimited conditions (53%) *vs*. sucrose limited conditions (37%). *Inverse tendency with respect to the case of initial [$NH_{4}$] = 100 mM*.
+
+  On the other hand, the **number of configurations with both $NH_{4}$ and $P_{i}$ final exhaustion** was much more higher under sucrose-unlimited (100%) than under sucrose limited conditions (0%).
+
+  Finally, there were **a certain number of configurations with $P_{i}$ production** (with **no** $NH_{4}$ final exhaustion) under sucrose-limited (10%), sucrose-unlimited (13%) and sucrose/ $P_{i}$ unlimited conditions (5%).
+  
+* In this case, biomass loss was also analyzed: **death effect happened in many configurations (around 70%)** for all the three FLYCOP runs. In this sense, **under no sucrose limitations** (second run), $NH_{4}$ and $P_{i}$ were both finally exhausted in half of these configurations.
+
+  However, **under sucrose/ $P_{i}$ limiting conditions** (first FLYCOP run), $NH_{4}$ was never finally exhausted; and **under sucrose/ $P_{i}$ unlimiting conditions** (third FLYCOP run), $NH_{4}$ was just finally exhausted in 26% of the configurations.
+  
+  Thus **$NH_{4}$ limitations would be the general cause for biomass loss**, but there would have to be additional components, such as nutritional imbalance (carbon source related) to fully explain biomass loss.
+  
+  In turn, **phosphate consumption** would be promoted by sucrose (carbon source) availability.
+  
+* Finally, **when sucrose is available, it is consumed to a greater extent**. Moreover, it would boost nitrogen and phosphate consumption, even if these nutrients are limited. \newline
+
+
+**Potential hypothesis that came to my mind (further checking required)**:
+
+- Sucrose availability would boost nitrogen and phosphate consumption, even under these nutrient limitations.
+- Phosphate availability might diminish $NH_{4}$ consumption, even though biomass loss is still present to the same extent than under phosphate-limiting conditions.
+
+
+\newpage
+## 5.5. Global Conclusions for Multiple Comparative Analysis for each N-limitation configuration. {#NLim_M9_within_globalconc}
+
+* Regardless of the presence or absence of sucrose or sucrose/$P_{i}$ limitations, the **ratios for the optimal input parameters** (initial biomass, uptake rates) seemed to converge for the different FLYCOP runs. 
+
+  - **Initial Biomass ratio** (*E.coli* / *P.putida*) points clustered between 0.5 to 3.0-4.0.
+  - **Uptakes Rates ratio** (sucrose / fructose) points clustered under 1.0.
+  
+* Sucrose or sucrose/$P_{i}$ limitations conditioned the **final biomass concentrations** reached.
+  
+  - For *E.coli*, the growth was slightly favored under no sucrose or sucrose/$P_{i}$ limitations.
+  - However, this effect was attenuated for *P.putida*: under sucrose/$P_{i}$ limitations, there used to be some more configurations with higher final *P.putida* biomass. However, there were also some values with final biomass near 0 gL^-1^.
+  
+  This last effect was more evident, the lower the initial $NH_{4}$ concentration. **Interesting issues to be further checked in this sense** would be the following ones.
+  
+  * Higher burden on *E.coli* growth might benefit *P.putida* growth, as long as there is enough fructose and $P_{i}$ still available.
+  * *P.putida* might not be as dependent as *E.coli* on nitrogen (it might not require the same levels for biomass growth).
+  
+* **Final naringenin concentration ranges** were similar for the FLYCOP runs with and without sucrose and sucrose/ $P_{i}$ limitations, if reasonable production levels were to be considered. Otherwise, the production reached higher levels under no sucrose/$P_{i}$ limitations; which were higher the higher the initial $NH_{4}$ concentration.
+
+* However, **final pCA concentrations** were higher under no sucrose and sucrose/ $P_{i}$ limitations, in accordance with the better development of *E.coli* biomass for these FLYCOP runs.
+
+* With respect to **nitrogen limitations**, the absence of sucrose and sucrose/ $P_{i}$ limitations seemed to increase $NH_{4}$ consumption.
+
+* With respect to **final [$P_{i}$] values**, under $P_{i}$ limitations the complete consumption of this nutrient is variable between conditions of sucrose limitation *vs*. sucrose unlimitation (there is no clear pattern).
+
+  However, the **number of configurations with both $NH_{4}$ and $P_{i}$ final exhaustion** was notably higher under sucrose-unlimited than under sucrose limited conditions for all FLYCOP runs.
+
+  Finally, there were **a certain number of configurations with $P_{i}$ production** under sucrose-limited, sucrose-unlimited and sucrose/ $P_{i}$ unlimited conditions for all FLYCOP runs, in all four comparisons. However, in the first three comparative analysis (more restrictive initial $NH_{4}$ concentrations), $NH_{4}$ was always finally exhausted in these $P_{i}$ production cases. On the contrary, $NH_{4}$ was never exhausted for initial [$NH_{4}$] = 200 mM (last comparative analysis).
+  
+* For the last three comparative analysis ([$NH_{4}$] = 50, 100, 200 mM), **biomass loss was also analyzed**. Firstly, the lower the initial [$NH_{4}$], the higher the number of configurations with final death effect (from nearly 100% to 70%).
+
+  In general, it usually happened that, under sucrose/ $P_{i}$ limiting conditions, $NH_{4}$ was not usually exhausted. However, under sucrose unlimited conditions, both $NH_{4}$ and $P_{i}$ tended to be finally exhausted (specially for [$NH_{4}$] reduced initial levels). Similarly, under sucrose/ $P_{i}$ unlimiting conditions, $NH_{4}$ tended to be finally exhausted (specially for [$NH_{4}$] reduced initial levels).
+  
+  In other words:
+  
+    - if there are **several nutrient limitations** (N, P, carbon source), the interaction of these three would play a role in biomass loss, even if $NH_{4}$ exhaustion is the most influential of them.
+    - **under no carbon source limitations**, consumption of both $NH_{4}$ and $P_{i}$ would be specially boosted.
+    - **no limitation of carbon source and $P_{i}$** would stimulate $NH_{4}$ consumption.
+    - the last three effects appeared to be more evident, the lower the initial [$NH_{4}$] levels.
+
+* Finally, **when sucrose is available, it is consumed to a greater extent**. \newline
+
+
+
+\newpage
+# 6. Limitations and Further Implementation {#Lim_furImp}
+
+The **main limitations found** during the current analysis were the following ones.
+
+* **M9 medium standard nutrient amounts might be notably limiting**, specially those of nitrogen, phosphate and carbon source (depending on the conditions for the microbial consortium).
+* **Biomass equilibrium has not been completely implemented** in a series of FLYCOP executions without nutrient limitations (ideally, using M9 medium layout).
+* **Sucrose is *E.coli* carbon source**. *P.putida* carbon source is fructose, produced by *E.coli*: thus fructose availability would be indirectly linked to sucrose availability and *E.coli* development/ production. In other words, sucrose concentration is an indirect link with carbon source limitation for *P.putida*, so carbon source limitation conclusions should be taken carefully or compartmentalizedd to *E.coli* for this whole analysis.  \newline
+
+
+On the other hand, the **potential lines of implementation / continuation** with the current analysis of nutrient limitations (N, P) are proposed next. 
+
+* Considering the evolution of the consortium, with or without nutrient limitations, in simulations with **a lower number of cycles, instead of 240**. Nutrient and carbon source exhaustion in time might favour biomass loss in the simulation, thus reducing the time per individual configuration could be a partial solution. *`r colorize("David says NO", "red")`*.
+* Evaluating the **relative importance of nitrogen and phosphate for each of the microbes**, through FLYCOP runs with partial mutants for nitrogen or phosphate uptake. Also, considering the influence of B12 dependence for *E.coli* upon *P.putida* KT (...). *`r colorize("Low priority", "red")`*.
+* **Further understanding of nitrogen and phosphate limitations interaction** and its relationship with carbon source. On the other hand, revision of those cases where $NH_{4}$ was not finally exhausted and there were no other nutrient limitations, but still there was biomass loss. Related utilities for this analysis are shown next.
+
+  - Metabolite tracking during FLYCOP simulations. *In development*.
+  
+* **Further checking of the hypothetical naringenin higher production under nitrogen (and/ or phosphate) limitations**, since this effect was not finally confirmed with the last set of FLYCOP runs for nutrient limitations. *Potential comparison with a control FLYCOP run, without nutrient limitations: how would these concentrations be, in that case?* *`r colorize("Key point", "red")`*.
+* **Further series of FLYCOP runs with explicit phosphate limitations**: different values instead of the same one for all of them. \newline
+
+## 6.1. New Design for final analysis on nutrient limitations
+
+The **key points** to be further considered, after the current (whole) analysis and talking to David, were the following ones.
+
+* **Biomass equilibrium for initial concentrations**. Related with this issue, further checking of biomass final values: *if they are really somewhat inverted, negative relationship between E.coli* vs. *P.putida* development.
+
+* **Necessary nutrient balance for N, P and carbon source**. Since M9 medium seems to be nutrient-limiting, the alternative would be reducing uptake rates for N, P and (eventually) carbon source.
+
+  - The idea is **avoiding biomass loss**.
+  
+* **`r colorize("Key point", "red")`**. Assessing naringenin final levels, the original question. *Are they higher, lower or similar under nutrient limitations?* **David's hypothesis**: maybe naringenin is produced faster, but not in a greater quantity than under normal conditions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
